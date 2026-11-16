@@ -1,0 +1,1034 @@
+[
+ {
+  "name": "apicheck",
+  "aliases": [],
+  "description": "Quickly probe selected external text, image, audio and downloader APIs.",
+  "category": "owner"
+ },
+ {
+  "name": "backupnow",
+  "aliases": [],
+  "description": "Back up local bot settings to your pairing service.",
+  "category": "owner"
+ },
+ {
+  "name": "banchat",
+  "aliases": [],
+  "description": "Disable bot commands in this group for non-owners.",
+  "category": "owner"
+ },
+ {
+  "name": "banlist",
+  "aliases": [],
+  "description": "List bot-access bans privately.",
+  "category": "owner"
+ },
+ {
+  "name": "banuser",
+  "aliases": [],
+  "description": "Stop a phone number from using bot commands and autodownload.",
+  "category": "owner"
+ },
+ {
+  "name": "blocklist",
+  "aliases": [],
+  "description": "Show WhatsApp blocked accounts privately.",
+  "category": "owner"
+ },
+ {
+  "name": "broadcastopt",
+  "aliases": [],
+  "description": "Opt this chat into or out of broadcasts.",
+  "category": "owner"
+ },
+ {
+  "name": "clearchat-all",
+  "aliases": [],
+  "description": "Request WhatsApp clear on chats observed in this bot process.",
+  "category": "owner"
+ },
+ {
+  "name": "clearsession",
+  "aliases": [],
+  "description": "Delete the remote pairing record, including its session and backup.",
+  "category": "owner"
+ },
+ {
+  "name": "clone",
+  "aliases": [],
+  "description": "Temporarily copy a visible WhatsApp profile for 24 hours.",
+  "category": "owner"
+ },
+ {
+  "name": "delbotpp",
+  "aliases": [],
+  "description": "Remove the linked account profile picture.",
+  "category": "owner"
+ },
+ {
+  "name": "deletedata",
+  "aliases": [],
+  "description": "Delete your pairing-service data.",
+  "category": "owner"
+ },
+ {
+  "name": "dlcheck",
+  "aliases": [],
+  "description": "Check local downloader availability without installing or contacting APIs.",
+  "category": "owner"
+ },
+ {
+  "name": "list",
+  "aliases": [],
+  "description": "List ${labels[role]}s privately.",
+  "category": "owner"
+ },
+ {
+  "name": "mydata",
+  "aliases": [],
+  "description": "Show what the pairing service stores.",
+  "category": "owner"
+ },
+ {
+  "name": "ownermenu",
+  "aliases": [],
+  "description": "List owner-only commands and controls.",
+  "category": "owner"
+ },
+ {
+  "name": "reboot",
+  "aliases": [],
+  "description": "—",
+  "category": "owner"
+ },
+ {
+  "name": "restore",
+  "aliases": [],
+  "description": "Replace local settings with your stored backup.",
+  "category": "owner"
+ },
+ {
+  "name": "restoreprofile",
+  "aliases": [],
+  "description": "Restore the profile saved before cloning.",
+  "category": "owner"
+ },
+ {
+  "name": "selftest",
+  "aliases": [],
+  "description": "Safely exercise commands with synthetic inputs in an isolated environment.",
+  "category": "owner"
+ },
+ {
+  "name": "setbotbio",
+  "aliases": [],
+  "description": "Change the linked WhatsApp account About text.",
+  "category": "owner"
+ },
+ {
+  "name": "setbotname",
+  "aliases": [],
+  "description": "Change the linked WhatsApp account profile name.",
+  "category": "owner"
+ },
+ {
+  "name": "setbotpp",
+  "aliases": [],
+  "description": "Set the linked account profile picture from an image.",
+  "category": "owner"
+ },
+ {
+  "name": "shutdown",
+  "aliases": [],
+  "description": "—",
+  "category": "owner"
+ },
+ {
+  "name": "unbanchat",
+  "aliases": [],
+  "description": "Restore bot commands in this group.",
+  "category": "owner"
+ },
+ {
+  "name": "unbanuser",
+  "aliases": [],
+  "description": "Restore a phone number’s bot access.",
+  "category": "owner"
+ },
+ {
+  "name": "update",
+  "aliases": [],
+  "description": "Check GitHub for changes, or request a Render deploy explicitly.",
+  "category": "owner"
+ },
+ {
+  "name": "alarm",
+  "aliases": [],
+  "description": "Set an alarm at a UTC date and time.",
+  "category": "misc"
+ },
+ {
+  "name": "antiviewonce",
+  "aliases": [],
+  "description": "Per-chat opt-in: copy new view-once media privately to the owner; use only with sender permission.",
+  "category": "misc"
+ },
+ {
+  "name": "bookmark",
+  "aliases": [],
+  "description": "Save one HTTP(S) link to your personal bot bookmarks.",
+  "category": "misc"
+ },
+ {
+  "name": "bookmarks",
+  "aliases": [],
+  "description": "List your saved bookmarks.",
+  "category": "misc"
+ },
+ {
+  "name": "copy",
+  "aliases": [],
+  "description": "Copy typed text or a quoted text message into your personal bot clipboard.",
+  "category": "misc"
+ },
+ {
+  "name": "delreminder",
+  "aliases": [],
+  "description": "Delete one of your scheduled reminders.",
+  "category": "misc"
+ },
+ {
+  "name": "donetodo",
+  "aliases": [],
+  "description": "Mark one of your todo items complete.",
+  "category": "misc"
+ },
+ {
+  "name": "paste",
+  "aliases": [],
+  "description": "Show your personal bot clipboard.",
+  "category": "misc"
+ },
+ {
+  "name": "quote-msg",
+  "aliases": [],
+  "description": "Repeat a replied text as a visible text quotation.",
+  "category": "misc"
+ },
+ {
+  "name": "reminders",
+  "aliases": [],
+  "description": "List your scheduled reminders.",
+  "category": "misc"
+ },
+ {
+  "name": "savedmsgs",
+  "aliases": [],
+  "description": "List your saved message text.",
+  "category": "misc"
+ },
+ {
+  "name": "savemsg",
+  "aliases": [],
+  "description": "Save text from a quoted non-view-once message.",
+  "category": "misc"
+ },
+ {
+  "name": "star",
+  "aliases": [],
+  "description": "Save a quoted message in the bot’s own star list; not WhatsApp’s native stars.",
+  "category": "misc"
+ },
+ {
+  "name": "starred",
+  "aliases": [],
+  "description": "List your bot-starred message text.",
+  "category": "misc"
+ },
+ {
+  "name": "stopwatch",
+  "aliases": [],
+  "description": "Start, stop or reset a personal stopwatch.",
+  "category": "misc"
+ },
+ {
+  "name": "timer",
+  "aliases": [],
+  "description": "Set a relative timer using the persistent reminder queue.",
+  "category": "misc"
+ },
+ {
+  "name": "translate-reply",
+  "aliases": [],
+  "description": "Translate replied text with RUTHLESS AI; the text is sent to LLM7.",
+  "category": "misc"
+ },
+ {
+  "name": "tts-reply",
+  "aliases": [],
+  "description": "Read replied text aloud; the quoted text is sent to Google Translate speech.",
+  "category": "misc"
+ },
+ {
+  "name": "allowcountry",
+  "aliases": [],
+  "description": "Manage allowed international phone prefixes for antifake.",
+  "category": "group"
+ },
+ {
+  "name": "botprefix",
+  "aliases": [],
+  "description": "Manage bot message-ID prefixes for antibot detection.",
+  "category": "group"
+ },
+ {
+  "name": "delpp",
+  "aliases": [],
+  "description": "Delete the group picture.",
+  "category": "group"
+ },
+ {
+  "name": "endvote",
+  "aliases": [],
+  "description": "End the active bot-run vote.",
+  "category": "group"
+ },
+ {
+  "name": "eventimg",
+  "aliases": [],
+  "description": "Enable or disable menu, welcome and goodbye images for this group.",
+  "category": "group"
+ },
+ {
+  "name": "eventrsvp",
+  "aliases": [],
+  "description": "Create a group event and let members RSVP.",
+  "category": "group"
+ },
+ {
+  "name": "gpostall",
+  "aliases": [],
+  "description": "Privately prepare an experimental group status for opted-in groups; confirmation required.",
+  "category": "group"
+ },
+ {
+  "name": "groupdigest",
+  "aliases": [],
+  "description": "Summarize text deliberately contributed by group members using LLM7.",
+  "category": "group"
+ },
+ {
+  "name": "grouplink",
+  "aliases": [],
+  "description": "Get the group invite link.",
+  "category": "group"
+ },
+ {
+  "name": "groupstatus",
+  "aliases": [],
+  "description": "Experimentally post text, a photo or a short video as a status for this group.",
+  "category": "group"
+ },
+ {
+  "name": "gstatusopt",
+  "aliases": [],
+  "description": "A group admin can opt this group in or out of owner multi-group status posts.",
+  "category": "group"
+ },
+ {
+  "name": "listwarn",
+  "aliases": [],
+  "description": "List group warnings.",
+  "category": "group"
+ },
+ {
+  "name": "revoke",
+  "aliases": [],
+  "description": "Reset the group invite link.",
+  "category": "group"
+ },
+ {
+  "name": "slowmode",
+  "aliases": [],
+  "description": "Set bot-side slowmode in seconds or off.",
+  "category": "group"
+ },
+ {
+  "name": "stickercollect",
+  "aliases": [],
+  "description": "Opt in this group to collection of newly posted stickers.",
+  "category": "group"
+ },
+ {
+  "name": "tag",
+  "aliases": [],
+  "description": "Mention a replied user or typed numbers.",
+  "category": "group"
+ },
+ {
+  "name": "taskboard",
+  "aliases": [],
+  "description": "A shared group task list; creators can finish or remove their items.",
+  "category": "group"
+ },
+ {
+  "name": "vote",
+  "aliases": [],
+  "description": "Start or vote in a bot-run vote.",
+  "category": "group"
+ },
+ {
+  "name": "aqi",
+  "aliases": [],
+  "description": "Show modeled current air-quality estimates from Open-Meteo.",
+  "category": "search"
+ },
+ {
+  "name": "breaking",
+  "aliases": [],
+  "description": "Show recent top headlines; not an emergency alert service.",
+  "category": "search"
+ },
+ {
+  "name": "distance",
+  "aliases": [],
+  "description": "Calculate straight-line distance between two coordinates.",
+  "category": "search"
+ },
+ {
+  "name": "earthquake",
+  "aliases": [],
+  "description": "Show recent worldwide earthquakes from the USGS feed.",
+  "category": "search"
+ },
+ {
+  "name": "flights",
+  "aliases": [],
+  "description": "Create a Google Flights link; results, availability and prices are not fetched.",
+  "category": "search"
+ },
+ {
+  "name": "google",
+  "aliases": [],
+  "description": "Create a Google Search link; results are opened in your browser, not fetched by the bot.",
+  "category": "search"
+ },
+ {
+  "name": "headlines",
+  "aliases": [],
+  "description": "Show recent Google News RSS headlines for NG, US or GB.",
+  "category": "search"
+ },
+ {
+  "name": "moonphase",
+  "aliases": [],
+  "description": "Estimate the lunar phase for a UTC date.",
+  "category": "search"
+ },
+ {
+  "name": "nearby",
+  "aliases": [],
+  "description": "Create a Google Maps search link for a place type and city; does not calculate proximity.",
+  "category": "search"
+ },
+ {
+  "name": "phonetic",
+  "aliases": [],
+  "description": "Show available English phonetic transcriptions from Free Dictionary API.",
+  "category": "search"
+ },
+ {
+  "name": "pronounce",
+  "aliases": [],
+  "description": "Speak an English word; the word is sent to unofficial Google Translate text-to-speech.",
+  "category": "search"
+ },
+ {
+  "name": "route",
+  "aliases": [],
+  "description": "Create a Google Maps directions link; route results are not fetched.",
+  "category": "search"
+ },
+ {
+  "name": "thesaurus",
+  "aliases": [],
+  "description": "Find synonyms and antonyms using Datamuse.",
+  "category": "search"
+ },
+ {
+  "name": "urban",
+  "aliases": [],
+  "description": "Look up community-submitted slang on Urban Dictionary; entries may be offensive.",
+  "category": "search"
+ },
+ {
+  "name": "uv",
+  "aliases": [],
+  "description": "Show the modeled current UV index from Open-Meteo.",
+  "category": "search"
+ },
+ {
+  "name": "weather5",
+  "aliases": [],
+  "description": "Show a five-day weather forecast from Open-Meteo.",
+  "category": "search"
+ },
+ {
+  "name": "blackjack",
+  "aliases": [],
+  "description": "Play free blackjack against a dealer who stands on 17.",
+  "category": "games"
+ },
+ {
+  "name": "chess",
+  "aliases": [],
+  "description": "Two-player chess using chess.js rules, legal moves and draw detection.",
+  "category": "games"
+ },
+ {
+  "name": "connect4",
+  "aliases": [],
+  "description": "Two-player Connect 4 with real turn and win validation.",
+  "category": "games"
+ },
+ {
+  "name": "lottery",
+  "aliases": [],
+  "description": "Draw six unique numbers; for fun, not real betting.",
+  "category": "games"
+ },
+ {
+  "name": "lovecalc",
+  "aliases": [],
+  "description": "Make a fictional compatibility score or ship name.",
+  "category": "games"
+ },
+ {
+  "name": "palm",
+  "aliases": [],
+  "description": "Generate a fictional palm-reading-style prompt for entertainment.",
+  "category": "games"
+ },
+ {
+  "name": "roll20",
+  "aliases": [],
+  "description": "Roll a 20-sided die.",
+  "category": "games"
+ },
+ {
+  "name": "roulette",
+  "aliases": [],
+  "description": "Play free European roulette by choosing red, black or 0–36.",
+  "category": "games"
+ },
+ {
+  "name": "speedtype",
+  "aliases": [],
+  "description": "Measure how fast you retype a short phrase.",
+  "category": "games"
+ },
+ {
+  "name": "tarot",
+  "aliases": [],
+  "description": "Draw a random fictional tarot card for entertainment.",
+  "category": "games"
+ },
+ {
+  "name": "tictactoe",
+  "aliases": [],
+  "description": "Two-player tic-tac-toe in a group.",
+  "category": "games"
+ },
+ {
+  "name": "trivia",
+  "aliases": [],
+  "description": "Play one multiple-choice Open Trivia Database question.",
+  "category": "games"
+ },
+ {
+  "name": "typerace",
+  "aliases": [],
+  "description": "Run a timed group typing race with a leaderboard.",
+  "category": "games"
+ },
+ {
+  "name": "wheel",
+  "aliases": [],
+  "description": "Randomly pick from a list of choices.",
+  "category": "games"
+ },
+ {
+  "name": "wordle",
+  "aliases": [],
+  "description": "Play a five-letter Wordle-style game with six guesses.",
+  "category": "games"
+ },
+ {
+  "name": "zodiac",
+  "aliases": [],
+  "description": "Find a Western zodiac sign from a month and day.",
+  "category": "games"
+ },
+ {
+  "name": "apk",
+  "aliases": [],
+  "description": "Search F-Droid or look up an Android package (F-Droid only).",
+  "category": "downloaders"
+ },
+ {
+  "name": "applemusic",
+  "aliases": [],
+  "description": "Find a matching track using Apple Music, iTunes and YouTube.",
+  "category": "downloaders"
+ },
+ {
+  "name": "capcut",
+  "aliases": [],
+  "description": "Download the preview video of a public CapCut template.",
+  "category": "downloaders"
+ },
+ {
+  "name": "deezer",
+  "aliases": [],
+  "description": "Find a matching track using Deezer metadata, iTunes and YouTube.",
+  "category": "downloaders"
+ },
+ {
+  "name": "gitclone",
+  "aliases": [],
+  "description": "Download a public GitHub repository as a ZIP (max 50 MB). Source: GitHub.",
+  "category": "downloaders"
+ },
+ {
+  "name": "happymod",
+  "aliases": [],
+  "description": "Search happymod.cloud and return third-party app listing links.",
+  "category": "downloaders"
+ },
+ {
+  "name": "igstory",
+  "aliases": [],
+  "description": "Download available public Instagram stories by username via third-party StoryLurk.",
+  "category": "downloaders"
+ },
+ {
+  "name": "imdbdl",
+  "aliases": [],
+  "description": "Find IMDb title information and a possible YouTube trailer link (no full movie).",
+  "category": "downloaders"
+ },
+ {
+  "name": "spotify",
+  "aliases": [],
+  "description": "Find a matching track using Spotify metadata, iTunes and YouTube.",
+  "category": "downloaders"
+ },
+ {
+  "name": "spotifysearch",
+  "aliases": [],
+  "description": "Search the iTunes music catalog for songs.",
+  "category": "downloaders"
+ },
+ {
+  "name": "tidal",
+  "aliases": [],
+  "description": "Find a matching track using TIDAL metadata, iTunes and YouTube.",
+  "category": "downloaders"
+ },
+ {
+  "name": "tiktokslide",
+  "aliases": [],
+  "description": "Download the images from a public TikTok photo post (maximum 20 slides and 50 MB total).",
+  "category": "downloaders"
+ },
+ {
+  "name": "apply",
+  "aliases": [],
+  "description": "Choose a virtual job.",
+  "category": "economy"
+ },
+ {
+  "name": "buy",
+  "aliases": [],
+  "description": "Buy virtual shop items.",
+  "category": "economy"
+ },
+ {
+  "name": "farm",
+  "aliases": [],
+  "description": "Show your virtual corn crop and its growth timer.",
+  "category": "economy"
+ },
+ {
+  "name": "harvest",
+  "aliases": [],
+  "description": "Harvest grown virtual corn.",
+  "category": "economy"
+ },
+ {
+  "name": "inventory",
+  "aliases": [],
+  "description": "Show your virtual items.",
+  "category": "economy"
+ },
+ {
+  "name": "job",
+  "aliases": [],
+  "description": "Show your virtual job.",
+  "category": "economy"
+ },
+ {
+  "name": "jobs",
+  "aliases": [],
+  "description": "List virtual jobs and their work bonus.",
+  "category": "economy"
+ },
+ {
+  "name": "plant",
+  "aliases": [],
+  "description": "Plant virtual seeds to grow corn in five minutes.",
+  "category": "economy"
+ },
+ {
+  "name": "rank",
+  "aliases": [],
+  "description": "Show your level and XP from economy activities.",
+  "category": "economy"
+ },
+ {
+  "name": "resign",
+  "aliases": [],
+  "description": "Leave your virtual job.",
+  "category": "economy"
+ },
+ {
+  "name": "sell",
+  "aliases": [],
+  "description": "Sell gathered fish or ore for virtual coins.",
+  "category": "economy"
+ },
+ {
+  "name": "shop",
+  "aliases": [],
+  "description": "Show the virtual-item shop.",
+  "category": "economy"
+ },
+ {
+  "name": "aiavatar",
+  "aliases": [],
+  "description": "Create a stylized avatar; the image and prompt are sent to AI Horde volunteers.",
+  "category": "ai"
+ },
+ {
+  "name": "aiinfo",
+  "aliases": [],
+  "description": "Learn about RUTHLESS AI and its text provider.",
+  "category": "ai"
+ },
+ {
+  "name": "askpdf",
+  "aliases": [],
+  "description": "Ask RUTHLESS AI about text from a PDF. Extracted text is sent to LLM7.",
+  "category": "ai"
+ },
+ {
+  "name": "clearchat",
+  "aliases": [],
+  "description": "Clear your recent AI chat history in this chat.",
+  "category": "ai"
+ },
+ {
+  "name": "imagine",
+  "aliases": [],
+  "description": "Generate one image with the volunteer AI Horde, using Stable Diffusion (not DALL-E).",
+  "category": "ai"
+ },
+ {
+  "name": "img2img",
+  "aliases": [],
+  "description": "Transform an image; the image and prompt are sent to AI Horde volunteers.",
+  "category": "ai"
+ },
+ {
+  "name": "ocr",
+  "aliases": [],
+  "description": "Read English text from an image locally with Tesseract OCR.",
+  "category": "ai"
+ },
+ {
+  "name": "stt",
+  "aliases": [],
+  "description": "Transcribe short English voice notes locally with Whisper Tiny English.",
+  "category": "ai"
+ },
+ {
+  "name": "studyquiz",
+  "aliases": [],
+  "description": "Create a personal three-question AI quiz from supplied notes sent to LLM7.",
+  "category": "ai"
+ },
+ {
+  "name": "tts",
+  "aliases": [],
+  "description": "Speak text as an Opus voice note; the text is sent to the unofficial Google Translate speech endpoint.",
+  "category": "ai"
+ },
+ {
+  "name": "vision",
+  "aliases": [],
+  "description": "Describe an image or answer a question about it via BlockRun vision.",
+  "category": "ai"
+ },
+ {
+  "name": "barcode",
+  "aliases": [],
+  "description": "Generate a local Code 128 barcode.",
+  "category": "tools"
+ },
+ {
+  "name": "bcrypt",
+  "aliases": [],
+  "description": "Hash or verify a sample password locally in a private chat.",
+  "category": "tools"
+ },
+ {
+  "name": "cipher",
+  "aliases": [],
+  "description": "Encrypt or decrypt local text with AES-GCM in a private chat.",
+  "category": "tools"
+ },
+ {
+  "name": "decrypt",
+  "aliases": [],
+  "description": "Decrypt a token created by this bot in a private chat.",
+  "category": "tools"
+ },
+ {
+  "name": "dns",
+  "aliases": [],
+  "description": "Look up public DNS records using Google Public DNS.",
+  "category": "tools"
+ },
+ {
+  "name": "encrypt",
+  "aliases": [],
+  "description": "Encrypt text locally with a passphrase in a private chat.",
+  "category": "tools"
+ },
+ {
+  "name": "ffinfo",
+  "aliases": [],
+  "description": "Look up Free Fire profile, career stats and equipment through an unofficial external service.",
+  "category": "tools"
+ },
+ {
+  "name": "fflike",
+  "aliases": [],
+  "description": "Like requests are disabled until a verified provider is configured; fail-closed notice only.",
+  "category": "tools"
+ },
+ {
+  "name": "screenshot",
+  "aliases": [],
+  "description": "Capture a public website using Thum.io; the URL is sent to that provider.",
+  "category": "tools"
+ },
+ {
+  "name": "vigenere",
+  "aliases": [],
+  "description": "Apply a Vigenère cipher for education; not secure encryption.",
+  "category": "tools"
+ },
+ {
+  "name": "emoji",
+  "aliases": [],
+  "description": "Show a large Twemoji image.",
+  "category": "media"
+ },
+ {
+  "name": "emojimix",
+  "aliases": [],
+  "description": "Mix two supported emoji with Google Emoji Kitchen.",
+  "category": "media"
+ },
+ {
+  "name": "meme",
+  "aliases": [],
+  "description": "Add top and bottom meme captions.",
+  "category": "media"
+ },
+ {
+  "name": "removebg",
+  "aliases": [],
+  "description": "Remove the background locally with IMG.LY.",
+  "category": "media"
+ },
+ {
+  "name": "rotate",
+  "aliases": [],
+  "description": "Rotate an image by degrees.",
+  "category": "media"
+ },
+ {
+  "name": "tomp4",
+  "aliases": [],
+  "description": "Convert replied video to MP4.",
+  "category": "media"
+ },
+ {
+  "name": "tourl",
+  "aliases": [],
+  "description": "Upload replied media to Uguu for a temporary public link.",
+  "category": "media"
+ },
+ {
+  "name": "tovideo",
+  "aliases": [],
+  "description": "Convert an animated sticker to MP4.",
+  "category": "media"
+ },
+ {
+  "name": "tovn",
+  "aliases": [],
+  "description": "Convert audio to a WhatsApp voice note.",
+  "category": "media"
+ },
+ {
+  "name": "watermark",
+  "aliases": [],
+  "description": "Add text to the lower corner.",
+  "category": "media"
+ },
+ {
+  "name": "anticall",
+  "aliases": [],
+  "description": "Reject incoming calls; optionally block verified non-owner callers.",
+  "category": "extras"
+ },
+ {
+  "name": "chatbot",
+  "aliases": [],
+  "description": "Toggle automatic AI chat per group or globally for DMs.",
+  "category": "extras"
+ },
+ {
+  "name": "commandreact",
+  "aliases": [],
+  "description": "Turn command acknowledgement reactions on or off.",
+  "category": "extras"
+ },
+ {
+  "name": "inactive",
+  "aliases": [],
+  "description": "List members with no observed messages for N days; never removes them.",
+  "category": "extras"
+ },
+ {
+  "name": "savestatus",
+  "aliases": [],
+  "description": "Save a replied status to your own private chat.",
+  "category": "extras"
+ },
+ {
+  "name": "setprefix",
+  "aliases": [],
+  "description": "Set the stored bot command prefix.",
+  "category": "extras"
+ },
+ {
+  "name": "tickle",
+  "aliases": [],
+  "description": "Send a tickle reaction GIF from OtakuGIFs.",
+  "category": "extras"
+ },
+ {
+  "name": "getbio",
+  "aliases": [],
+  "description": "Read a WhatsApp About status only when visible to the bot.",
+  "category": "social"
+ },
+ {
+  "name": "ghstalk",
+  "aliases": [],
+  "description": "Look up a public GitHub profile using the GitHub API.",
+  "category": "social"
+ },
+ {
+  "name": "mcserver",
+  "aliases": [],
+  "description": "Check public Minecraft Java server status with mcsrvstat.us.",
+  "category": "social"
+ },
+ {
+  "name": "mcskin",
+  "aliases": [],
+  "description": "Show a Minecraft Java skin using Mojang and Crafatar.",
+  "category": "social"
+ },
+ {
+  "name": "mcuser",
+  "aliases": [],
+  "description": "Look up a Minecraft Java username and UUID via Mojang.",
+  "category": "social"
+ },
+ {
+  "name": "npmstalk",
+  "aliases": [],
+  "description": "Find public npm packages maintained by a username.",
+  "category": "social"
+ },
+ {
+  "name": "stalk",
+  "aliases": [],
+  "description": "Create an Instagram or TikTok profile link; no data is fetched.",
+  "category": "social"
+ },
+ {
+  "name": "calendar",
+  "aliases": [],
+  "description": "Show the current month.",
+  "category": "general"
+ },
+ {
+  "name": "language",
+  "aliases": [],
+  "description": "Save your default language for future translation commands.",
+  "category": "general"
+ },
+ {
+  "name": "support",
+  "aliases": [],
+  "description": "—",
+  "category": "general"
+ },
+ {
+  "name": "anilist",
+  "aliases": [],
+  "description": "Search AniList anime or manga.",
+  "category": "anime"
+ },
+ {
+  "name": "animevoice",
+  "aliases": [],
+  "description": "—",
+  "category": "anime"
+ },
+ {
+  "name": "dogecoin",
+  "aliases": [],
+  "description": "—",
+  "category": "converters"
+ },
+ {
+  "name": "ethereum",
+  "aliases": [],
+  "description": "—",
+  "category": "converters"
+ },
+ {
+  "name": "trim-audio",
+  "aliases": [],
+  "description": "Trim an audio or video soundtrack to a segment, locally.",
+  "category": "audio"
+ }
+]
