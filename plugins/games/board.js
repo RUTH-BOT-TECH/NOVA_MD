@@ -102,7 +102,6 @@ export default [
 
   {
     name: 'move',
-    aliases: ['play'],
     category: 'games',
     description: 'Place your mark in tic-tac-toe',
     usage: '.move 5',

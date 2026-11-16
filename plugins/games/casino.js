@@ -220,8 +220,8 @@ export default [
   },
 
   {
-    name: 'roll',
-    aliases: ['roll20', 'dice20'],
+    name: 'roll20',
+    aliases: ['dice20'],
     category: 'games',
     description: 'Roll dice — .roll 2d6 or .roll 20',
     usage: '.roll 20  ·  .roll 2d6',
@@ -242,7 +242,7 @@ export default [
 
   {
     name: 'lovecalc',
-    aliases: ['love', 'match'],
+    aliases: ['match'],
     category: 'games',
     description: 'Deterministic love score between two names',
     usage: '.lovecalc Ada | Chidi',

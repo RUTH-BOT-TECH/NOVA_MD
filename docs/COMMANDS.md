@@ -1,6 +1,6 @@
 # Command catalogue
 
-Generated from the registry — **326 commands**, 610 names with aliases, 22 categories.
+Generated from the registry — **336 commands**, 625 names with aliases, 22 categories.
 
 Regenerate with `npm run docs`.
 
@@ -22,7 +22,7 @@ Regenerate with `npm run docs`.
 | [misc](#misc) | 4 |
 | [audio](#audio) | 10 |
 | [dev](#dev) | 10 |
-| [economy](#economy) | 12 |
+| [economy](#economy) | 22 |
 | [faith](#faith) | 3 |
 | [reactions](#reactions) | 18 |
 | [search](#search) | 11 |
@@ -287,11 +287,11 @@ Regenerate with `npm run docs`.
 | `guess` | — | everyone | Submit a Wordle guess |
 | `hit` | `hitme` | everyone | Take another card |
 | `lottery` | `lotto` | everyone | Pick 5 numbers from 1–50 |
-| `lovecalc` | `love` `match` | everyone | Deterministic love score between two names |
-| `move` | `play` | everyone | Place your mark in tic-tac-toe |
+| `lovecalc` | `match` | everyone | Deterministic love score between two names |
+| `move` | — | everyone | Place your mark in tic-tac-toe |
 | `quit` | `abort` | everyone | Abandon the game in this chat |
 | `quote` | `quotes` | everyone | A random quote |
-| `roll` | `roll20` `dice20` | everyone | Roll dice — .roll 2d6 or .roll 20 |
+| `roll20` | `dice20` | everyone | Roll dice — .roll 2d6 or .roll 20 |
 | `roulette` | — | everyone | Bet red, black or a number |
 | `stand` | — | everyone | Hold your hand and let the dealer play |
 | `tictactoe` | `ttt` | everyone | Play tic-tac-toe against the bot |
@@ -371,13 +371,23 @@ Regenerate with `npm run docs`.
 |---|---|---|---|
 | `balance` | `bal` `wallet` `bank` | everyone | Your wallet and bank balance |
 | `beg` | — | everyone | Beg for a little change (10m cooldown) |
+| `buy` | — | everyone | Buy something from the shop |
 | `daily` | `claim` | everyone | Claim your daily reward (streak multiplies it) |
 | `deposit` | `dep` | everyone | Move cash into the bank (safer from robbery) |
 | `ecoreset` | `reseteco` | 👑 owner | Wipe one user or everyone (owner) |
+| `farm` | — | everyone | Look at your plot |
 | `gamble` | `bet` | everyone | Bet an amount on a coin toss (48% win) |
+| `harvest` | `reap` | everyone | Collect a finished crop |
+| `inventory` | `inv` `bag` | everyone | What you are carrying |
+| `job` | — | everyone | Take a job and work a shift |
+| `jobs` | — | everyone | Jobs you can take |
 | `pay` | `transfer` `give` | everyone | Send money to someone (2% fee) |
+| `plant` | `sow` | everyone | Plant a seed you own |
+| `rank` | `xp` | everyone | XP leaderboard for this deployment |
 | `rich` | `leaderboard` `top` | everyone | Richest users |
 | `rob` | — | everyone | Try to rob someone — you can get caught |
+| `sell` | — | everyone | Sell stock back at 60% |
+| `shop` | — | everyone | What the shop sells |
 | `slots` | — | everyone | Spin the slot machine |
 | `withdraw` | `with` | everyone | Move money out of the bank |
 | `work` | — | everyone | Do a job for coins (1h cooldown) |

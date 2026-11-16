@@ -138,7 +138,7 @@ ok('wheel singles out exactly one slice', (wheel.match(/\*\d+\*/g) || []).length
 const lotto = await cmd('lottery', '100');
 ok('lottery draws numbers', /ʟᴏᴛᴛᴇʀʏ/.test(lotto) && /ᴍᴀᴛᴄʜᴇꜱ/.test(lotto), clean(lotto));
 
-const roll = await cmd('roll', '');
+const roll = await cmd('roll20', '');
 ok('roll produces a d20 result', /\b([1-9]|1\d|20)\b/.test(roll), clean(roll));
 
 const love = await cmd('lovecalc', 'Tester Nova');
