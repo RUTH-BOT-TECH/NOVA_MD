@@ -5,7 +5,7 @@ Every file below is in the repo root, so the platforms that read repo config
 secrets.
 
 ```
-render.yaml        Render Blueprint — bot + pairing site, two services
+render.yaml        Render Blueprint — the pairing site, one free service, no prompts
 railway.json       Railway build/start + restart policy (the bot)
 web/railway.json   Railway config for the pairing-site service
 nixpacks.toml      Railway/Nixpacks — brings ffmpeg + yt-dlp
@@ -26,17 +26,32 @@ tiers instead of a paid worker.
 
 [![Deploy to Render](https://img.shields.io/badge/DEPLOY_TO-RENDER-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://render.com/deploy?repo=https://github.com/RUTH-BOT-TECH/NOVA_MD)
 
-**New → Blueprint → pick your fork.** `render.yaml` creates two services:
+**New → Blueprint → pick your fork → Apply.** That is the whole flow — the
+blueprint declares **one** service and zero secrets:
 
-| service | what | start |
-|---|---|---|
-| `nova-md` | the bot | `node src/index.js` |
-| `nova-pair` | pairing site | `node web/server.js` |
+| service | what | plan | start |
+|---|---|---|---|
+| `nova-pair` | pairing site | free | `npm start` in `web/` |
 
-Render prompts for `OWNER_NUMBER`, `OWNER_NAME` and `SESSION_ID` (`sync: false`
-means "ask, don't store in git"). Get the session from `nova-pair`, then paste
-it into `nova-md` → Environment → Save (it redeploys).
-Free instances sleep; use `starter` if you want it always on.
+Nothing is `sync: false`, so Render never stops to ask you for a value, and
+nothing needs a card. Free instances sleep after 15 minutes idle; open the page
+and wait ~50s to wake it.
+
+**Render, by hand (the bot).** The bot is deliberately *not* in the blueprint:
+it needs `SESSION_ID` and `OWNER_NUMBER`, and Render renders every `sync: false`
+as a form field that blocks the deploy. Create it after you have a session:
+
+| setting | value |
+|---|---|
+| Type / Runtime | Web Service · Node |
+| Build command | `npm ci --omit=dev --no-audit --no-fund` |
+| Start command | `node src/index.js` |
+| Health check path | `/health` |
+| Environment | `SESSION_ID`, `OWNER_NUMBER`, `PAIR_URL`, `NODE_ENV=production`, `SESSION_DIR=/tmp/sessions` |
+
+`SESSION_DIR=/tmp/sessions` matters: Render disks are paid, and a session string
+is enough to reconnect. Free instances sleep — `starter` if you want it always
+on.
 
 ## Railway — one click
 

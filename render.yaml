@@ -1,60 +1,27 @@
-# Render Blueprint — one click creates both services.
+# Render Blueprint — the pairing site only.
 #
-#   1. push this repo to your own GitHub account
-#   2. Render → New → Blueprint → pick the repo
-#   3. paste SESSION_ID when asked (get it from the pairing site, below)
+# One press, nothing to fill in:
+#   Render → New → Blueprint → pick this repo → Apply.
 #
-# The bot runs as a *web* service so it can use the free/cheap tier and stay
-# alive: it answers GET /health on $PORT. The pairer is a second service.
+# Why only the pair site: a blueprint that also declared the bot would ask for
+# SESSION_ID and OWNER_NUMBER before it deployed anything, and it would need a
+# paid instance to keep a session on disk. The pair site needs none of that —
+# it is diskless, free-tier, and you delete it as soon as you have the
+# SESSION_ID. The bot itself is deployed afterwards, by you, wherever you like
+# (see docs/DEPLOY.md → "Render, by hand").
+#
+# Nothing here uses `sync: false`, because every `sync: false` turns into a
+# form field Render blocks the deploy on.
 services:
-  - type: web
-    name: nova-md
-    runtime: node
-    plan: starter
-    region: frankfurt
-    branch: main
-    buildCommand: npm ci --omit=dev --no-audit --no-fund
-    startCommand: node src/index.js
-    healthCheckPath: /health
-    autoDeploy: true
-    envVars:
-      - key: NODE_ENV
-        value: production
-      - key: PORT
-        value: 10000            # the bot's own /health listener
-      - key: SESSION_BACKEND
-        value: session
-      - key: SESSION_DIR
-        value: /tmp/sessions    # Render disks are paid; a session string is enough
-      - key: BOT_NAME
-        value: NOVA-MD
-      - key: OWNER_NUMBER
-        sync: false
-      - key: SESSION_ID
-        sync: false
-      - key: OWNER_NAME
-        sync: false
-      - key: TZ
-        value: Africa/Lagos
-      - key: LOG_LEVEL
-        value: info
-      # optional: any one key switches on .ai / .gpt / .gemini
-      - key: GEMINI_API_KEY
-        sync: false
-      - key: GROQ_API_KEY
-        sync: false
-
-  # The pair site is a standalone app in web/ (its own package.json), so the
-  # service just points at that directory — nothing to configure by hand.
   - type: web
     name: nova-pair
     runtime: node
     plan: free
     region: frankfurt
     branch: main
-    rootDir: web
+    rootDir: web                 # web/ is a standalone app: its own package.json
     buildCommand: npm install --no-audit --no-fund
-    startCommand: npm start
+    startCommand: npm start      # node server.js, listening on Render's $PORT
     healthCheckPath: /health
     autoDeploy: true
     envVars:
@@ -69,4 +36,4 @@ services:
       - key: MAX_ACTIVE
         value: 2
       - key: PAIR_ONCE
-        value: "1"          # one-time link: first pairing wins, then 403
+        value: "1"               # one-time link: first pairing wins, then 403

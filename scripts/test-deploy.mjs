@@ -44,12 +44,13 @@ for (const f of ['railway.json', 'app.json', 'package.json']) {
   catch (err) { ok(`${f} parses`, false, err.message.slice(0, 80)); }
 }
 
-/* ── Render: two services, real start commands, prompts for secrets ── */
+/* ── Render: the blueprint is the pair site, and it asks for nothing ── */
 const render = await yaml('render.yaml');
 const services = render.services || [];
-ok('render.yaml defines the bot and the pairer', services.length === 2, String(services.length));
+// A blueprint that also declares the bot blocks the deploy on SESSION_ID and
+// OWNER_NUMBER prompts, which defeats the point of the one-click button.
+ok('render.yaml deploys exactly one service (the pairer)', services.length === 1, String(services.length));
 const byName = Object.fromEntries(services.map((s) => [s.name, s]));
-ok('render.yaml bot service is named nova-md', Boolean(byName['nova-md']));
 ok('render.yaml pairer service is named nova-pair', Boolean(byName['nova-pair']));
 
 for (const svc of services) {
@@ -72,15 +73,19 @@ for (const svc of services) {
   const leaky = (svc.envVars || []).filter((v) => /SESSION_ID|API_KEY|TOKEN|SECRET/.test(v.key) && v.value);
   ok(`${svc.name} never hardcodes a secret`, leaky.length === 0, leaky.map((v) => v.key).join(', '));
 }
-const botEnv = (byName['nova-md'].envVars || []);
-ok('render.yaml asks for SESSION_ID instead of inventing one', botEnv.some((v) => v.key === 'SESSION_ID' && v.sync === false));
 const pairSvc = services.find((s) => s.name === 'nova-pair');
 ok('render.yaml points the pair service at web/ (no build config needed)', pairSvc?.rootDir === 'web', JSON.stringify(pairSvc?.rootDir));
 ok('render.yaml pair service just runs npm start', pairSvc?.startCommand === 'npm start', pairSvc?.startCommand);
 ok('render.yaml pair service is free-tier', pairSvc?.plan === 'free', pairSvc?.plan);
 ok('render.yaml pair service is single-use by default', (pairSvc?.envVars || []).some((v) => v.key === 'PAIR_ONCE' && String(v.value) === '1'));
 ok('render.yaml no longer sets WEB_PORT on the pairer', !(pairSvc?.envVars || []).some((v) => v.key === 'WEB_PORT'));
-ok('render.yaml asks for OWNER_NUMBER', botEnv.some((v) => v.key === 'OWNER_NUMBER' && v.sync === false));
+// sync: false is a form field Render refuses to deploy past — none allowed here.
+ok('render.yaml blueprint prompts for nothing',
+  services.every((s) => (s.envVars || []).every((v) => v.sync !== false)),
+  services.flatMap((s) => (s.envVars || []).filter((v) => v.sync === false).map((v) => v.key)).join(', '));
+ok('render.yaml blueprint needs no paid plan or card', services.every((s) => s.plan === 'free'),
+  services.map((s) => `${s.name}:${s.plan}`).join(', '));
+ok('render.yaml blueprint declares no disk (free tier has none)', services.every((s) => !s.disk));
 
 /* ── Railway ──────────────────────────────────────────────────────── */
 const railway = await json('railway.json');
@@ -193,6 +198,20 @@ ok('/health reports the working directory, so a 502 is diagnosable',
   /root:\s*path\.basename\(process\.cwd\(\)\)/.test(siteServer));
 ok('/health reports the listening port', /port:\s*LISTEN_PORT/.test(siteServer));
 ok('startup log names root, PORT and WEB_PORT', /root=\$\{path\.basename\(process\.cwd\(\)\)\}/.test(siteServer));
+
+/* ── the docs must lead with the host that actually works one-press ── */
+const pairingDoc = await read('PAIRING.md');
+ok('PAIRING.md puts the one-press Render recipe before Railway',
+  pairingDoc.indexOf('### Render') > 0 && pairingDoc.indexOf('### Render') < pairingDoc.indexOf('### Railway'));
+ok('PAIRING.md keeps the #railway anchor the README links to',
+  /id="railway"/.test(pairingDoc));
+ok('PAIRING.md tells you /health proves the right directory',
+  /"root":\s*"web"/.test(pairingDoc) || /`"root": "web"`/.test(pairingDoc));
+const deployDoc = await read('docs/DEPLOY.md');
+ok('DEPLOY.md explains the bot is not in the blueprint and why',
+  /not\*{0,2} in the blueprint/i.test(deployDoc) || /deliberately \*not\*/.test(deployDoc));
+ok('DEPLOY.md gives the manual bot start command', deployDoc.includes('node src/index.js'));
+ok('DEPLOY.md keeps sessions off a paid disk', deployDoc.includes('SESSION_DIR=/tmp/sessions'));
 
 /* ── README buttons must point somewhere real ─────────────────────── */
 const readme = await read('README.md');

@@ -25,9 +25,11 @@ Deep dive (job states, API, env vars, limits): **[docs/PAIRING.md](docs/PAIRING.
 If all you need is **one SESSION_ID** for yourself, deploy the site, use it,
 then throw the service away.
 
-**Render (one click).** The **DEPLOY PAIR SITE** badge in the README opens the
-blueprint. It creates two services; you only need `nova-pair`. Once the pair
-site has a URL, delete the `nova-md` service you do not need — or just ignore it.
+**Render (recommended — one press, nothing to type).** The **DEPLOY PAIR SITE**
+badge in the README opens the blueprint, and `render.yaml` declares **only** the
+pair site: free plan, `rootDir: web`, no card, and not a single field to fill
+in. Render reads the file, builds `web/`, runs `npm start`, and gives you a
+`https://nova-pair.onrender.com` URL. Use it, then delete the service.
 
 **Railway.** Follow [section 2](#railway) below, then delete the `nova-pair`
 service when you are done.
@@ -71,77 +73,89 @@ To actually pair locally, use your real number with country code, digits only
 (`2348012345678` — no `+`, no spaces, no leading `0`), press **Get code**, then
 on the phone: **WhatsApp → Settings → Linked devices → Link with phone number**.
 
-## 2. Give users a link (Railway)  <a id="railway"></a>
+## 2. Give users a link  <a id="railway"></a>
 
-This is the part you want, because users need a URL they can open.
+Users need a URL they can open, so one of the two hosts below has to be
+running. Both serve the **same** app out of `web/`, which is a standalone app (its own
+`package.json`), so neither host needs a start command from you.
 
-**Both services come from this one repo.**
+### Render — one press, nothing to type
 
-1. **New Project → Deploy from GitHub repo** → your fork. This service is the
-   **bot** and uses `railway.json` from the repo root.
-2. In the same project, **+ New → GitHub Repo** → the **same** fork again.
-   Rename this service to `nova-pair`.
-3. Open `nova-pair` → **Settings → Source → Root Directory**, and type:
+1. Open the **DEPLOY PAIR SITE** badge (or
+   `https://render.com/deploy?repo=https://github.com/RUTH-BOT-TECH/NOVA_MD`).
+2. Sign in with GitHub → **Apply**. There is nothing else: `render.yaml` already
+   sets the free plan, the region, `rootDir: web`, the health check and
+   `PAIR_ONCE=1`, and it asks for no secrets, so Render never stops to prompt.
+3. Wait for **Live**, then open the service URL — `https://nova-pair.onrender.com`
+   (yours will have a suffix). `…/health` must answer:
+
+   ```json
+   { "ok": true, "mode": "live", "root": "web", "port": 10000,
+     "active": 0, "linked": 0, "max": 2, "once": true, "used": false }
+   ```
+
+   `"root": "web"` is the one field that matters: it proves Render built the
+   right directory. If it says `nova-md`, the blueprint was not used.
+4. Pair, copy the `SESSION_ID`, then **delete the service** (Settings → Delete
+   Web Service). Free instances also go to sleep after 15 minutes idle; opening
+   the page wakes them in about 50 seconds, so open the link first, then pair.
+
+### Railway — if you prefer it
+
+Two things go wrong on Railway often enough to name: the service builds the
+repo **root** (so it starts the bot instead of the site), and a Dockerfile with
+a `VOLUME` line is rejected outright. The fix for the first is one field.
+
+1. **+ New → GitHub Repo** → your fork. Rename the service to `nova-pair`.
+2. `nova-pair` → **Settings → Source → Root Directory**, and type:
 
    ```
    web
    ```
 
-   That is the whole trick. `web/` is a standalone app with its own
-   `package.json`, so Railway detects Node there and runs `npm start` →
-   `node server.js` by itself. No custom start command, no build command.
+   That is the whole trick: Railway then detects Node inside `web/` and runs
+   `npm start` → `node server.js` by itself. Leave the build and start command
+   fields **empty**, and set **Builder** to **Railpack** if it is pinned to
+   `Dockerfile` (`web/` has no Dockerfile).
 
-   (If you leave Root Directory empty, Railway runs the repo root, which
-   starts the **bot** instead — that is the one mistake worth avoiding.)
+   (If you leave Root Directory empty, Railway runs the repo root and starts the
+   **bot** — the one mistake worth avoiding.)
 
    > Railway's Settings page still offers **Add File Path** under
    > Config-as-code. It is deprecated and a service that never enabled it
-   > cannot opt in, so ignore it — `web/railway.json` stays in the repo only
-   > for services that already use config-as-code.
+   > cannot opt in, so ignore it.
 
-4. `nova-pair` → **Variables**:
+3. `nova-pair` → **Variables**:
 
    ```
    BOT_NAME=NOVA-MD
    SESSION_PREFIX=NOVA-MD
    REPO_URL=https://github.com/RUTH-BOT-TECH/NOVA_MD
    MAX_ACTIVE=3
+   PAIR_ONCE=1
    ```
 
    **Delete `WEB_PORT` if Railway auto-detected one.** Railway scans the repo
    and happily fills in `WEB_PORT=3000` from `.env.example`, but it routes
    traffic to the `PORT` it injects — so a service listening on 3000 answers
-   `502` with a perfectly healthy process behind it. `web/server.js` now lets
-   the injected `PORT` win and logs `WEB_PORT=… ignored` when that happens, but
-   the clean fix is to remove the variable. For a throwaway link add
-   `PAIR_ONCE=1` (see [section 0](#one-time)).
+   `502` with a perfectly healthy process behind it. `web/server.js` lets the
+   injected `PORT` win and logs `WEB_PORT=… ignored`, but removing the variable
+   is the clean fix.
 
-5. `nova-pair` → **Settings → Networking → Generate Domain**. That URL is the
-   link you give people:
+4. `nova-pair` → **Settings → Networking → Generate Domain**. Same check as
+   above: `…/health` must say `"root":"web"`.
 
-   ```
-   https://nova-pair-production.up.railway.app
-   ```
+### Then, on the bot
 
-   Open it, and also open `…/health`. It must answer:
+Whatever host runs the bot, set what the site gave you and where it lives:
 
-   ```json
-   { "ok": true, "mode": "live", "active": 0, "linked": 0, "max": 3 }
-   ```
+```
+OWNER_NUMBER=234…
+SESSION_ID=NOVA-MD~eyJub2lzZUtleSI6…
+PAIR_URL=https://nova-pair.onrender.com
+```
 
-6. Back in the **bot** service → Variables, save what the site gave you and
-   where it lives:
-
-   ```
-   OWNER_NUMBER=234…
-   SESSION_ID=NOVA-MD~eyJub2lzZUtleSI6…
-   PAIR_URL=https://nova-pair-production.up.railway.app
-   ```
-
-   `.menu` then prints the pairing link for everyone, so nobody has to ask.
-
-Prefer Render instead? `render.yaml` already creates both services in one click —
-see **[docs/DEPLOY.md](docs/DEPLOY.md)**.
+`.menu` then prints the pairing link for everyone, so nobody has to ask.
 
 ## 3. What the user experiences
 
