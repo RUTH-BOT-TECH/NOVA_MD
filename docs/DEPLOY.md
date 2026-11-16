@@ -59,27 +59,28 @@ in one project.
 | service | config file | start command |
 |---|---|---|
 | `nova-md` | `railway.json` (repo root) | `node src/index.js` |
-| `nova-pair` | dashboard settings (`web/railway.json` is legacy) | `node web/server.js` |
+| `nova-pair` | Root Directory = `web` (auto-detects `npm start`) | `node server.js` |
 
 Steps:
 
 1. **New Project → Deploy from GitHub repo** → pick your fork. That is the bot.
 2. In the same project: **+ New → GitHub Repo** → pick the *same* fork again.
    Rename this service to `nova-pair`.
-3. Open `nova-pair` → **Settings → Deploy → Custom Start Command** and enter:
+3. Open `nova-pair` → **Settings → Source → Root Directory** and enter:
 
    ```
-   node web/server.js
+   web
    ```
 
-   Without this the service runs `npm start` and boots a second copy of the
-   bot. Also set **Healthcheck Path** to `/health`, and leave **Root Directory**
-   empty.
+   `web/` ships its own `package.json` and is self-contained, so Railway's
+   auto-detection runs `npm start` there. Without the root directory the
+   service builds the repo root and starts a second copy of the bot.
 
-   Config-as-Code is deprecated on Railway and unavailable to services that
-   never enabled it, so do not use **Add File Path**; `web/railway.json` remains
-   for services that already had it. The dashboard settings are the supported
-   route.
+   > Railway's Settings page still offers **Add File Path** under
+   > Config-as-code. It is deprecated and a service that never enabled it
+   > cannot opt in, so ignore it — `web/railway.json` stays in the repo only
+   > for services that already use config-as-code.
+
 4. `nova-pair` → **Variables**:
 
    ```

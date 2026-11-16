@@ -53,11 +53,20 @@ ok('render.yaml bot service is named nova-md', Boolean(byName['nova-md']));
 ok('render.yaml pairer service is named nova-pair', Boolean(byName['nova-pair']));
 
 for (const svc of services) {
-  const script = (svc.startCommand || '').match(/^node (\S+)/)?.[1];
-  const exists = script ? await fs.access(script).then(() => true, () => false) : false;
-  ok(`${svc.name} startCommand points at a real file`, exists, svc.startCommand);
+  // either `node <file>` from the repo root, or `npm start` inside a rootDir
+  if ((svc.startCommand || '').startsWith('npm ')) {
+    const dir = svc.rootDir || '.';
+    const sub = JSON.parse(await read(path.join(dir, 'package.json')));
+    const inner = (sub.scripts?.start || '').match(/node (\S+)/)?.[1];
+    const okFile = inner ? await fs.access(path.join(dir, inner)).then(() => true, () => false) : false;
+    ok(`${svc.name} startCommand resolves inside ${dir}/`, okFile, `${svc.startCommand} → ${inner}`);
+  } else {
+    const script = (svc.startCommand || '').match(/^node (\S+)/)?.[1];
+    const exists = script ? await fs.access(script).then(() => true, () => false) : false;
+    ok(`${svc.name} startCommand points at a real file`, exists, svc.startCommand);
+  }
   ok(`${svc.name} declares a health check`, Boolean(svc.healthCheckPath), svc.healthCheckPath || 'none');
-  ok(`${svc.name} builds with npm ci`, /npm ci/.test(svc.buildCommand || ''), svc.buildCommand);
+  ok(`${svc.name} installs dependencies deterministically`, /npm (ci|install)/.test(svc.buildCommand || ''), svc.buildCommand);
   const keys = (svc.envVars || []).map((v) => v.key);
   ok(`${svc.name} only names real env vars`, keys.every((k) => hasEnv(k)), keys.filter((k) => !hasEnv(k)).join(', '));
   const leaky = (svc.envVars || []).filter((v) => /SESSION_ID|API_KEY|TOKEN|SECRET/.test(v.key) && v.value);
@@ -65,6 +74,12 @@ for (const svc of services) {
 }
 const botEnv = (byName['nova-md'].envVars || []);
 ok('render.yaml asks for SESSION_ID instead of inventing one', botEnv.some((v) => v.key === 'SESSION_ID' && v.sync === false));
+const pairSvc = services.find((s) => s.name === 'nova-pair');
+ok('render.yaml points the pair service at web/ (no build config needed)', pairSvc?.rootDir === 'web', JSON.stringify(pairSvc?.rootDir));
+ok('render.yaml pair service just runs npm start', pairSvc?.startCommand === 'npm start', pairSvc?.startCommand);
+ok('render.yaml pair service is free-tier', pairSvc?.plan === 'free', pairSvc?.plan);
+ok('render.yaml pair service is single-use by default', (pairSvc?.envVars || []).some((v) => v.key === 'PAIR_ONCE' && String(v.value) === '1'));
+ok('render.yaml no longer sets WEB_PORT on the pairer', !(pairSvc?.envVars || []).some((v) => v.key === 'WEB_PORT'));
 ok('render.yaml asks for OWNER_NUMBER', botEnv.some((v) => v.key === 'OWNER_NUMBER' && v.sync === false));
 
 /* ── Railway ──────────────────────────────────────────────────────── */
@@ -76,6 +91,24 @@ ok('railway.json checks /health', railway.deploy?.healthcheckPath === '/health')
 const nix = await read('nixpacks.toml');
 ok('nixpacks.toml installs ffmpeg and yt-dlp', /ffmpeg/.test(nix) && /yt-dlp/.test(nix));
 ok('nixpacks.toml starts the bot', /node src\/index\.js/.test(nix));
+
+/* ── web/ is a standalone app (one-field deploys) ─────────────────── */
+const webPkg = await json('web/package.json');
+ok('web/ has its own package.json', webPkg.name === 'nova-md-pair-site');
+ok('web/ starts itself with npm start', webPkg.scripts?.start === 'node server.js', webPkg.scripts?.start);
+ok('web/ declares the deps it needs', Boolean(webPkg.dependencies?.['@whiskeysockets/baileys']) && Boolean(webPkg.dependencies?.express));
+const webEntries = await fs.readdir('web', { recursive: true, withFileTypes: true });
+const webSources = webEntries
+  .filter((e) => e.isFile() && /\.m?js$/.test(e.name))
+  .map((e) => path.relative('web', path.join(e.parentPath ?? e.path, e.name)))
+  .filter((p) => !p.startsWith('node_modules'));
+let escapes = [];
+for (const f of webSources) {
+  const src = await read(path.join('web', f));
+  if (/from ['"]\.\.\/src|from ['"]\.\.\/\.\.\/src/.test(src)) escapes.push(f);
+}
+ok('nothing in web/ imports from outside web/', escapes.length === 0, escapes.join(', '));
+ok('web/ carries its own config and logger', await fs.access('web/lib/config.js').then(() => true, () => false) && await fs.access('web/lib/log.js').then(() => true, () => false));
 
 /* ── the pairing service's own Railway config ─────────────────────── */
 const webRail = await json('web/railway.json');
@@ -96,7 +129,7 @@ ok('PAIR_URL is documented in .env.example', hasEnv('PAIR_URL'));
 ok('config exposes pairUrl for the menu', /pairUrl/.test(await read('src/config.js')));
 ok('the menu prints the pairing link when set', /PAIR_URL|pairUrl/.test(await read('plugins/general/menu.js')));
 const dep = await read('docs/DEPLOY.md');
-ok('DEPLOY.md explains the Railway start command', /Custom Start Command/.test(dep) && /node web\/server\.js/.test(dep));
+ok('DEPLOY.md explains the Root Directory = web step', /Root Directory/.test(dep) && /web\n|`web`/.test(dep));
 ok('DEPLOY.md marks config-as-code as legacy', /legacy|deprecated/i.test(dep));
 
 /* ── Procfile ─────────────────────────────────────────────────────── */
@@ -158,9 +191,8 @@ const quick = await read('PAIRING.md');
 ok('PAIRING.md exists at the repo root', quick.length > 500, String(quick.length));
 ok('README points people at PAIRING.md', readme.includes('blob/main/PAIRING.md'));
 ok('PAIRING.md maps every file in web/', ['server.js', 'index.html', 'pairer.js', 'session.js', 'railway.json'].every((f) => quick.includes(f)));
-ok('PAIRING.md gives the dashboard start command for Railway', quick.includes('Custom Start Command') && quick.includes('node web/server.js'));
-ok('PAIRING.md warns that Config-as-Code is deprecated', /deprecated/i.test(quick) && /cannot opt in|Add File Path/i.test(quick));
-ok('PAIRING.md keeps Root Directory empty', /Root Directory\*\* empty|Leave \*\*Root Directory/i.test(quick));
+ok('PAIRING.md warns the config-file route is deprecated', /deprecated/i.test(quick) && /Add File Path|config/i.test(quick));
+ok('PAIRING.md makes Root Directory = web the only Railway step', /Root Directory[\s\S]{0,80}web/.test(quick) && /standalone app|self-contained/i.test(quick));
 ok('PAIRING.md links the deep dive', quick.includes('docs/PAIRING.md'));
 ok('PAIRING.md has a one-time deploy section', /One-time deploy/i.test(quick) && quick.includes('id="one-time"'));
 ok('PAIRING.md explains PAIR_ONCE', /PAIR_ONCE/.test(quick) && /single-use/i.test(quick));

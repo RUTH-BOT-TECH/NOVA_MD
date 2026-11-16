@@ -7,8 +7,8 @@ import {
   Browsers,
   delay,
 } from '@whiskeysockets/baileys';
-import { logger, baileysLogger } from '../../src/lib/logger.js';
-import { config } from '../../src/config.js';
+import { logger, baileysLogger } from './log.js';
+import { config } from './config.js';
 import { encodeSession, memoryAuthState } from './session.js';
 
 /**

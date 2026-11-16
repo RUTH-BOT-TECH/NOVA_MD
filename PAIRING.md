@@ -81,24 +81,24 @@ This is the part you want, because users need a URL they can open.
    **bot** and uses `railway.json` from the repo root.
 2. In the same project, **+ New → GitHub Repo** → the **same** fork again.
    Rename this service to `nova-pair`.
-3. Open `nova-pair` → **Settings → Deploy → Custom Start Command**, and type:
+3. Open `nova-pair` → **Settings → Source → Root Directory**, and type:
 
    ```
-   node web/server.js
+   web
    ```
 
-   This is the step that matters. Without it the service runs `npm start`,
-   which boots a **second copy of the bot** instead of the pair site. Leave
-   **Root Directory** empty — the site imports from `src/`, so it needs the
-   whole repo.
+   That is the whole trick. `web/` is a standalone app with its own
+   `package.json`, so Railway detects Node there and runs `npm start` →
+   `node server.js` by itself. No custom start command, no build command.
 
-   Then, in the same panel, set **Healthcheck Path** to `/health`.
+   (If you leave Root Directory empty, Railway runs the repo root, which
+   starts the **bot** instead — that is the one mistake worth avoiding.)
 
-   > Railway's own Settings page says Config-as-Code is deprecated, and that
-   > services which never used it cannot opt in any more. So ignore the
-   > **Add File Path** button: `web/railway.json` stays in the repo for
-   > services that already had it, and the dashboard settings above are the
-   > supported route.
+   > Railway's Settings page still offers **Add File Path** under
+   > Config-as-code. It is deprecated and a service that never enabled it
+   > cannot opt in, so ignore it — `web/railway.json` stays in the repo only
+   > for services that already use config-as-code.
+
 4. `nova-pair` → **Variables**:
 
    ```

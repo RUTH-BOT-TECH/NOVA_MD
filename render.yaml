@@ -44,21 +44,22 @@ services:
       - key: GROQ_API_KEY
         sync: false
 
+  # The pair site is a standalone app in web/ (its own package.json), so the
+  # service just points at that directory — nothing to configure by hand.
   - type: web
     name: nova-pair
     runtime: node
-    plan: starter
+    plan: free
     region: frankfurt
     branch: main
-    buildCommand: npm ci --omit=dev --no-audit --no-fund
-    startCommand: node web/server.js
+    rootDir: web
+    buildCommand: npm install --no-audit --no-fund
+    startCommand: npm start
     healthCheckPath: /health
     autoDeploy: true
     envVars:
       - key: NODE_ENV
         value: production
-      - key: WEB_PORT
-        value: 10000
       - key: SESSION_PREFIX
         value: NOVA-MD
       - key: BOT_NAME
@@ -66,6 +67,6 @@ services:
       - key: REPO_URL
         value: https://github.com/RUTH-BOT-TECH/NOVA_MD
       - key: MAX_ACTIVE
-        value: 3
-      - key: PER_IP
-        value: 5
+        value: 2
+      - key: PAIR_ONCE
+        value: "1"          # one-time link: first pairing wins, then 403

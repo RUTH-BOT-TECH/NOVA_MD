@@ -2,8 +2,8 @@ import express from 'express';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { startPairing, getJob, cancelPairing, refreshCode, stats, stats2, listJobs, sweep, PairError } from './lib/pairer.js';
-import { config } from '../src/config.js';
-import { logger } from '../src/lib/logger.js';
+import { config } from './lib/config.js';
+import { logger } from './lib/log.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -35,7 +35,7 @@ app.get('/api/config', (req, res) => {
     botName: config.botName,
     ownerName: config.ownerName,
     repoUrl: config.repoUrl,
-    prefix: config.prefixes.join(''),
+    prefix: config.prefix,
     sessionPrefix: process.env.SESSION_PREFIX || config.botName.replace(/[^A-Za-z0-9-]/g, ''),
     stats: stats(),
   });
