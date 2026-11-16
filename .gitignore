@@ -1,0 +1,12 @@
+node_modules/
+sessions/
+data/*.json
+.env
+*.log
+.DS_Store
+web/tmp/
+
+# yt-dlp / ytdl-core debug dumps
+*player-script.js
+*watch.html
+cookies.txt

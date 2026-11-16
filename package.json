@@ -1,0 +1,41 @@
+{
+  "name": "nova-md",
+  "version": "1.2.0",
+  "private": true,
+  "type": "module",
+  "description": "A from-scratch WhatsApp bot built on Baileys",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "smoke": "node scripts/smoke.mjs",
+    "web": "node web/server.js",
+    "dev:web": "node --watch web/server.js",
+    "preview": "node scripts/preview-menu.mjs",
+    "test:image": "node scripts/test-image.mjs",
+    "test:commands": "node scripts/test-commands.mjs",
+    "docs": "node scripts/commands-doc.mjs",
+    "doctor": "node scripts/doctor.mjs",
+    "test:live": "node scripts/test-live.mjs",
+    "test:economy": "node scripts/test-economy.mjs",
+    "test:text": "node scripts/test-textmaker.mjs",
+    "test:audio": "node scripts/test-audio.mjs",
+    "test:integration": "node scripts/test-integration.mjs"
+  },
+  "dependencies": {
+    "@hapi/boom": "^10.0.1",
+    "@whiskeysockets/baileys": "6.7.24",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "pino": "^9.6.0",
+    "qrcode": "^1.5.4",
+    "qrcode-terminal": "^0.12.0",
+    "sharp": "^0.35.5"
+  },
+  "optionalDependencies": {
+    "@supabase/supabase-js": "^2.47.10",
+    "@distube/ytdl-core": "^4.16.12"
+  }
+}

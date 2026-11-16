@@ -1,0 +1,32 @@
+{
+  "120363000000000001@g.us": {
+    "antilink": true,
+    "goodbyeEnabled": true,
+    "warns": {
+      "2348000000002": {
+        "count": 1,
+        "reason": "",
+        "at": 1794807790701
+      }
+    },
+    "welcomeEnabled": true
+  },
+  "user:2348000000001": {
+    "wallet": 3922,
+    "bank": 0,
+    "streak": 1,
+    "lastDaily": 1794807759722,
+    "lastWork": 1794807791259,
+    "lastBeg": 1794807759186,
+    "created": 1794807759179
+  },
+  "2348000000001@s.whatsapp.net": {
+    "notes": [
+      {
+        "text": "buy milk",
+        "at": "2026-11-16T05:42:40.895Z"
+      }
+    ],
+    "riddle": "Fire"
+  }
+}
