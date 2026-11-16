@@ -87,5 +87,15 @@ app.get('/health', (req, res) => res.json({
 }));
 app.use((req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 
-const port = Number(process.env.WEB_PORT || process.env.PORT || 3000);
-app.listen(port, '0.0.0.0', () => logger.info(`${config.botName} pairing site → http://0.0.0.0:${port}`));
+// Platforms (Railway, Render, Koyeb, Fly) inject PORT and route traffic to it,
+// so it wins over WEB_PORT. Hosts that only give you a container (compose,
+// docker run) leave PORT unset and WEB_PORT applies. Getting this backwards is
+// what makes a deployed site answer 502 with a healthy process behind it.
+const injected = process.env.PORT && process.env.PORT !== '0';
+const port = Number(injected ? process.env.PORT : (process.env.WEB_PORT || 3000));
+app.listen(port, '0.0.0.0', () => {
+  logger.info(`${config.botName} pairing site → http://0.0.0.0:${port}`);
+  if (injected && process.env.WEB_PORT && Number(process.env.WEB_PORT) !== port) {
+    logger.warn(`WEB_PORT=${process.env.WEB_PORT} ignored — the platform injected PORT=${port}, which is what traffic is routed to`);
+  }
+});

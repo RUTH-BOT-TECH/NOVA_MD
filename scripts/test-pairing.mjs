@@ -167,6 +167,32 @@ rail.kill('SIGTERM');
 await sleep(150);
 if (!rail.killed) rail.kill('SIGKILL');
 
+/* ── a stale WEB_PORT must never beat the platform's PORT ───────────── */
+// This is the exact Railway trap: their dashboard auto-detects WEB_PORT=3000
+// from the repo, while traffic goes to the injected PORT. The site must listen
+// on PORT and say so, not answer 502.
+const BOTH_PORT = PORT + 3;
+const bothSrv = spawn(process.execPath, ['web/server.js'], {
+  cwd: process.cwd(),
+  env: { ...process.env, PAIR_FAKE: '1', PORT: String(BOTH_PORT), WEB_PORT: '3999', LOG_LEVEL: 'warn' },
+  stdio: ['ignore', 'pipe', 'pipe'],
+});
+let bothLog = '';
+bothSrv.stdout.on('data', (d) => { bothLog += d; });
+bothSrv.stderr.on('data', (d) => { bothLog += d; });
+let bothUp = false;
+for (let i = 0; i < 60 && !bothUp; i++) {
+  await sleep(200);
+  bothUp = await fetch(`http://127.0.0.1:${BOTH_PORT}/health`).then((r) => r.ok).catch(() => false);
+}
+ok('an injected PORT wins over a stale WEB_PORT', bothUp, bothLog.slice(-160));
+const onWrongPort = await fetch('http://127.0.0.1:3999/health').then(() => true).catch(() => false);
+ok('it does not squat on the WEB_PORT value', !onWrongPort);
+ok('the log explains that WEB_PORT was ignored', /WEB_PORT=3999 ignored/i.test(bothLog), bothLog.slice(-160));
+bothSrv.kill('SIGTERM');
+await sleep(150);
+if (!bothSrv.killed) bothSrv.kill('SIGKILL');
+
 /* ── single-use mode, for a link you are about to delete ───────────── */
 const ONCE_PORT = PORT + 2;
 const onceSrv = spawn(process.execPath, ['web/server.js'], {

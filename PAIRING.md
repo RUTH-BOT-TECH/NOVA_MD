@@ -108,8 +108,12 @@ This is the part you want, because users need a URL they can open.
    MAX_ACTIVE=3
    ```
 
-   Do **not** set `PORT` or `WEB_PORT`. Railway injects `PORT`, and
-   `web/server.js` reads `WEB_PORT || PORT`. For a throwaway link add
+   **Delete `WEB_PORT` if Railway auto-detected one.** Railway scans the repo
+   and happily fills in `WEB_PORT=3000` from `.env.example`, but it routes
+   traffic to the `PORT` it injects — so a service listening on 3000 answers
+   `502` with a perfectly healthy process behind it. `web/server.js` now lets
+   the injected `PORT` win and logs `WEB_PORT=… ignored` when that happens, but
+   the clean fix is to remove the variable. For a throwaway link add
    `PAIR_ONCE=1` (see [section 0](#one-time)).
 
 5. `nova-pair` → **Settings → Networking → Generate Domain**. That URL is the

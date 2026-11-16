@@ -90,7 +90,9 @@ Steps:
    ```
 
    Do **not** set `WEB_PORT` or `PORT` — Railway injects `PORT` and
-   `web/server.js` reads it (`WEB_PORT || PORT`).
+   `web/server.js` prefers it. Railway may auto-detect `WEB_PORT=3000` from
+   `.env.example`; delete it, or the service listens on 3000 while traffic goes
+   to `$PORT` and every request 502s.
 5. `nova-pair` → **Settings → Networking → Generate Domain**. That URL is your
    pairing link:
 
