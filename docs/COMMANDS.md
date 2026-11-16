@@ -1,6 +1,6 @@
 # Command catalogue
 
-Generated from the registry — **336 commands**, 625 names with aliases, 22 categories.
+Generated from the registry — **348 commands**, 654 names with aliases, 22 categories.
 
 Regenerate with `npm run docs`.
 
@@ -13,7 +13,7 @@ Regenerate with `npm run docs`.
 | [text](#text) | 23 |
 | [converter](#converter) | 29 |
 | [image](#image) | 25 |
-| [media](#media) | 7 |
+| [media](#media) | 19 |
 | [anime](#anime) | 17 |
 | [fun](#fun) | 12 |
 | [games](#games) | 20 |
@@ -227,13 +227,25 @@ Regenerate with `npm run docs`.
 
 | Command | Aliases | Access | What it does |
 |---|---|---|---|
+| `applemusic` | `itunes` `apple` | everyone | Search Apple Music and send the preview |
+| `deezer` | `dz` | everyone | Search Deezer and send the 30s preview |
+| `deezerlist` | `dzlist` | everyone | Top Deezer matches without downloading |
+| `meme` | `caption` | everyone | Top and bottom text on an image — .meme top | bottom |
+| `paste` | `bin` `pastebin` | everyone | Paste text or a replied message and get a link |
+| `rotate` | `straighten` | everyone | Rotate an image by any angle — .rotate 45 |
 | `save` | `getmedia` | everyone | Save whatever media you reply to |
 | `saveaudio` | `aud2doc` | everyone | Save an audio clip as a document |
 | `savedoc` | `doc2doc` | everyone | Re-send a replied document |
 | `saveimg` | `img2doc` | everyone | Save an image as a document |
 | `savevideo` | `vid2doc` | everyone | Save a video as a document |
+| `spotifysearch` | `spotify` | everyone | Spotify metadata from a track link (Spotify audio needs an account) |
 | `stickerinfo` | `sinfo` | everyone | Read a sticker's pack name, author and dimensions |
 | `take` | `steal` `renamesticker` | everyone | Change a sticker's pack name and author |
+| `tomp4` | `tovideo` `fixvideo` | everyone | Re-container a video as a WhatsApp-safe mp4 |
+| `tourl` | `upload` `getlink` | everyone | Upload replied media or text and get a link (48h) |
+| `tovn` | `tovoicenote` | everyone | Turn any audio or video into a voice note |
+| `trim-audio` | `cutaudio` `atrim` | everyone | Cut audio or video sound — .trim-audio 0:30 1:00 |
+| `watermark` | `stamp` | everyone | Stamp text into the corner of an image |
 
 ## anime
 

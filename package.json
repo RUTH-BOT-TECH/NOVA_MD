@@ -23,6 +23,7 @@
     "test:games": "node scripts/test-games.mjs",
     "test:tools": "node scripts/test-tools.mjs",
     "test:rpg": "node scripts/test-rpg.mjs",
+    "test:media": "node scripts/test-media.mjs",
     "test:text": "node scripts/test-textmaker.mjs",
     "test:audio": "node scripts/test-audio.mjs",
     "test:integration": "node scripts/test-integration.mjs"
