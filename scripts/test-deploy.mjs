@@ -151,6 +151,19 @@ for (const [name, needle] of [
 ok('README deploy buttons are badges, not markdown links', !/\[![^\]]*\]\([^)]*\)/.test(readme));
 ok('README points to the deploy guide', readme.includes('docs/DEPLOY.md'));
 
+/* ── pairing docs reachable from the repo root ────────────────────── */
+const quick = await read('PAIRING.md');
+ok('PAIRING.md exists at the repo root', quick.length > 500, String(quick.length));
+ok('README points people at PAIRING.md', readme.includes('blob/main/PAIRING.md'));
+ok('PAIRING.md maps every file in web/', ['server.js', 'index.html', 'pairer.js', 'session.js', 'railway.json'].every((f) => quick.includes(f)));
+ok('PAIRING.md has the Railway config-path step', quick.includes('/web/railway.json'));
+ok('PAIRING.md links the deep dive', quick.includes('docs/PAIRING.md'));
+const webReadme = await read('web/README.md');
+ok('web/README.md explains the folder', /pairing/i.test(webReadme) && webReadme.includes('server.js'));
+ok('web/README.md links back to the root quickstart', webReadme.includes('../PAIRING.md'));
+const deep = await read('docs/PAIRING.md');
+ok('docs/PAIRING.md links back to the quickstart', deep.includes('../PAIRING.md'));
+
 /* ── the guide documents every manifest file ──────────────────────── */
 const guide = await read('docs/DEPLOY.md');
 for (const f of ['render.yaml', 'railway.json', 'nixpacks.toml', 'Procfile', 'app.json', 'fly.toml', 'Dockerfile', 'docker-compose.yml']) {

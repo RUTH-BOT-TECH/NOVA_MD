@@ -21,7 +21,7 @@
 <br><br>
 
 <strong>2 · PAIR &amp; DEPLOY</strong><br>
-<a href="https://github.com/RUTH-BOT-TECH/NOVA_MD/tree/main/web" target="_blank"><img alt="Session" src="https://img.shields.io/badge/SESSION%20%26%20DEPLOY-100000?style=for-the-badge&logo=whatsapp&logoColor=white&labelColor=darkgreen&color=darkgreen" /></a>
+<a href="https://github.com/RUTH-BOT-TECH/NOVA_MD/blob/main/PAIRING.md" target="_blank"><img alt="Session" src="https://img.shields.io/badge/SESSION%20%26%20DEPLOY-100000?style=for-the-badge&logo=whatsapp&logoColor=white&labelColor=darkgreen&color=darkgreen" /></a>
 
 <br><br>
 

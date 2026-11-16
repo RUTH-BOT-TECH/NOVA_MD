@@ -1,4 +1,7 @@
-# Pairing
+# Pairing — internals
+
+Quick start (local run + Railway link): **[../PAIRING.md](../PAIRING.md)**.
+This page is the detail: job states, API, env vars, limits.
 
 The bot never asks for your WhatsApp password. It asks WhatsApp for a **pairing
 code** on one device, you type that code into your phone, and the resulting
