@@ -42,11 +42,21 @@ Free instances sleep; use `starter` if you want it always on.
 
 [![Deploy on Railway](https://img.shields.io/badge/DEPLOY_TO-RAILWAY-8B5CF6?style=for-the-badge&logo=railway&logoColor=white)](https://railway.com/new)
 
-**New Project → Deploy from GitHub repo.** The root `railway.json` starts the
-bot, restarts it on failure up to 10 times and checks `/health`;
-`nixpacks.toml` installs **ffmpeg and yt-dlp**, so audio/video works without a
-Dockerfile. Add `OWNER_NUMBER` and `SESSION_ID` in *Variables*. For the public
+**New Project → Deploy from GitHub repo.** Railway's Railpack builder sees the
+root `package.json` and runs `npm start` (`node src/index.js`) by itself, so
+there is nothing to type. Add `OWNER_NUMBER` and `SESSION_ID` in *Variables*.
+`railway.json` and `nixpacks.toml` are still in the repo for services created
+back when Config-as-Code was open to everyone — a new service ignores them, so
+if the build needs **ffmpeg/yt-dlp** either use the **Dockerfile** (Settings →
+Build → Builder = Dockerfile) or add them with a builder setting. For the public
 pairing page, follow the section below — it needs a second service.
+
+Two build errors are common enough to name:
+
+| error | cause | fix |
+|---|---|---|
+| `docker VOLUME at Line 21 is not supported, use Railway Volumes` | Railway built the repo-root **Dockerfile**; Dockerfile volumes are not allowed there | already fixed — the Dockerfile declares no `VOLUME`; mount a volume at `/data` in the dashboard if you want sessions to survive redeploys |
+| `361 commands loaded · prefix "."` in the log, but the page 404s | the service is running the **bot**, not the pair site | set **Root Directory** = `web` and redeploy |
 
 ## Railway — the pairing link your users get
 

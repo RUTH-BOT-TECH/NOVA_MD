@@ -158,6 +158,9 @@ ok('Dockerfile ships a HEALTHCHECK', /HEALTHCHECK/.test(dockerfile));
 ok('Dockerfile health check hits /health', /\/health/.test(dockerfile));
 ok('Dockerfile installs ffmpeg', /ffmpeg/.test(dockerfile));
 ok('Dockerfile starts the bot', /CMD \["node", "src\/index\.js"\]/.test(dockerfile));
+// Railway refuses any build whose Dockerfile contains VOLUME; volumes are a
+// platform setting there, not a Dockerfile one.
+ok('Dockerfile declares no VOLUME (Railway rejects it)', !/^\s*VOLUME\s/im.test(dockerfile));
 
 const fly = parseToml(await read('fly.toml'));
 ok('fly.toml internal_port matches the Dockerfile PORT', Number(fly.http_service?.internal_port) === dockerPort, `${fly.http_service?.internal_port} vs ${dockerPort}`);
@@ -173,6 +176,11 @@ ok('compose runs bot and pairer', cServices.includes('nova-md') && cServices.inc
 ok('compose maps the pairer port', JSON.stringify(compose.services['nova-pair'].ports).includes('3000'));
 ok('compose bot publishes the health port', JSON.stringify(compose.services['nova-md'].ports).includes('8080'));
 ok('compose pairer runs web/server.js', JSON.stringify(compose.services['nova-pair'].command).includes('web/server.js'));
+
+ok('compose bot mounts the named session volume at /data',
+  [].concat(compose.services['nova-md']?.volumes || []).some((v) => String(v).endsWith(':/data')) &&
+    'nova-data' in (compose.volumes || {}),
+  JSON.stringify(compose.services['nova-md']?.volumes));
 
 /* ── README buttons must point somewhere real ─────────────────────── */
 const readme = await read('README.md');
