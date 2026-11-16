@@ -1,7 +1,7 @@
 import express from 'express';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { startPairing, getJob, cancelPairing, stats, listJobs, sweep, PairError } from './lib/pairer.js';
+import { startPairing, getJob, cancelPairing, refreshCode, stats, listJobs, sweep, PairError } from './lib/pairer.js';
 import { config } from '../src/config.js';
 import { logger } from '../src/lib/logger.js';
 
@@ -43,8 +43,8 @@ app.get('/api/config', (req, res) => {
 
 app.post('/api/pair', limit, async (req, res) => {
   try {
-    const job = await startPairing(req.body?.number);
-    res.json({ id: job.id, state: job.state, code: job.code });
+    // the whole job, so the page can start its countdown from the first reply
+    res.json(await startPairing(req.body?.number));
   } catch (err) {
     const status = err instanceof PairError ? err.status : 500;
     if (status === 500) logger.error({ err }, 'pair failed');
@@ -56,6 +56,15 @@ app.get('/api/pair/:id', (req, res) => {
   const job = getJob(req.params.id, { consume: req.query.consume === '1' });
   if (!job) return res.status(404).json({ error: 'That pairing session expired. Start over.' });
   res.json(job);
+});
+
+app.post('/api/pair/:id/code', limit, async (req, res) => {
+  try {
+    res.json(await refreshCode(req.params.id));
+  } catch (err) {
+    const status = err instanceof PairError ? err.status : 500;
+    res.status(status).json({ error: err.message });
+  }
 });
 
 app.post('/api/pair/:id/cancel', async (req, res) => {
@@ -70,7 +79,7 @@ app.get('/api/jobs', (req, res) => {
   res.json(listJobs());
 });
 
-app.get('/health', (req, res) => res.json({ ok: true, ...stats() }));
+app.get('/health', (req, res) => res.json({ ok: true, mode: process.env.PAIR_FAKE === '1' ? 'test' : 'live', ...stats() }));
 app.use((req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 
 const port = Number(process.env.WEB_PORT || process.env.PORT || 3000);

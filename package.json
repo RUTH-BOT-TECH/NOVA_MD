@@ -26,7 +26,8 @@
     "test:media": "node scripts/test-media.mjs",
     "test:text": "node scripts/test-textmaker.mjs",
     "test:audio": "node scripts/test-audio.mjs",
-    "test:integration": "node scripts/test-integration.mjs"
+    "test:integration": "node scripts/test-integration.mjs",
+    "test:pairing": "node scripts/test-pairing.mjs"
   },
   "dependencies": {
     "@hapi/boom": "^10.0.1",
@@ -39,7 +40,7 @@
     "sharp": "^0.35.5"
   },
   "optionalDependencies": {
-    "@supabase/supabase-js": "^2.47.10",
-    "@distube/ytdl-core": "^4.16.12"
+    "@distube/ytdl-core": "^4.16.12",
+    "@supabase/supabase-js": "^2.47.10"
   }
 }

@@ -125,8 +125,10 @@
     </div>
 
     <div class="code waiting" id="code">Your code will appear here</div>
+    <div class="hint" id="tick" style="text-align:center; margin-top:-4px"></div>
 
     <div class="row" id="actions" style="display:none">
+      <button class="ghost" id="recode" style="display:none">New code</button>
       <button class="ghost" id="cancel">Cancel</button>
     </div>
 
@@ -156,7 +158,7 @@
 
 <script>
 const $ = (id) => document.getElementById(id);
-let jobId = null, poll = null, shownSession = false;
+let jobId = null, poll = null, shownSession = false, codeExpiresAt = 0, countdown = null;
 
 const setStep = (n) => ['s1','s2','s3'].forEach((id, i) => $(id).classList.toggle('on', i < n));
 const statusEl = (text, kind) => {
@@ -165,6 +167,26 @@ const statusEl = (text, kind) => {
   el.innerHTML = text;
 };
 const clearStatus = () => { $('status').className = 'status'; $('status').innerHTML = ''; };
+
+/** WhatsApp codes only live about a minute — say so instead of letting it fail. */
+function startCountdown(at) {
+  codeExpiresAt = at || 0;
+  clearInterval(countdown);
+  const draw = () => {
+    const left = Math.max(0, Math.round((codeExpiresAt - Date.now()) / 1000));
+    if (!codeExpiresAt) { $('tick').textContent = ''; $('recode').style.display = 'none'; return; }
+    if (left > 0) {
+      $('tick').textContent = `Code valid for ${left}s`;
+      $('recode').style.display = 'none';
+    } else {
+      $('tick').textContent = 'Code expired — ask for a fresh one.';
+      $('recode').style.display = 'inline-flex';
+      $('code').classList.add('waiting');
+    }
+  };
+  draw();
+  countdown = setInterval(draw, 1000);
+}
 
 async function loadConfig() {
   try {
@@ -201,6 +223,7 @@ async function start() {
 
     jobId = data.id;
     $('actions').style.display = 'flex';
+    if (data.codeExpiresAt) startCountdown(data.codeExpiresAt);
     statusEl('Code requested. Keep this page open — it updates on its own.', 'info');
     poll = setInterval(tick, 1500);
     tick();
@@ -230,6 +253,8 @@ async function tick() {
       setStep(2);
       $('code').className = 'code';
       $('code').textContent = job.code ? job.code.match(/.{1,4}/g).join(' ') : '— — — — — — — —';
+      if (job.codeExpiresAt && job.codeExpiresAt !== codeExpiresAt) startCountdown(job.codeExpiresAt);
+      if (job.state === 'linking') startCountdown(0);
       statusEl(
         job.state === 'linking'
           ? 'Code accepted — finishing the link…'
@@ -241,6 +266,7 @@ async function tick() {
 
     if (job.state === 'ready') {
       stopPolling();
+      startCountdown(0);
       setStep(3);
       $('code').className = 'code';
       $('code').textContent = '✓ Linked';
@@ -257,6 +283,7 @@ async function tick() {
 
     if (job.state === 'error') {
       stopPolling();
+      startCountdown(0);
       statusEl(job.error || 'Pairing failed. Try again.', 'err');
       $('code').className = 'code waiting';
       $('code').textContent = 'Your code will appear here';
@@ -268,20 +295,43 @@ async function tick() {
 }
 
 function stopPolling() { clearInterval(poll); poll = null; }
-function resetButton() { $('go').disabled = false; $('go').textContent = 'Get code'; }
 
-async function cancel() {
-  if (jobId) await fetch('/api/pair/' + jobId + '/cancel', { method: 'POST' }).catch(() => {});
-  stopPolling(); jobId = null;
+async function newCode() {
+  if (!jobId) return;
+  $('recode').disabled = true;
+  try {
+    const res = await fetch('/api/pair/' + jobId + '/code', { method: 'POST' });
+    const job = await res.json();
+    if (!res.ok) throw new Error(job.error || 'Could not get a new code.');
+    $('code').className = 'code';
+    $('code').textContent = job.code ? job.code.match(/.{1,4}/g).join(' ') : '— — — — — — — —';
+    startCountdown(job.codeExpiresAt);
+    statusEl('Fresh code issued — type this one into WhatsApp.', 'info');
+  } catch (err) {
+    statusEl(err.message, 'err');
+  } finally {
+    $('recode').disabled = false;
+  }
+}
+function resetButton() { $('go').disabled = false; $('go').textContent = 'Get code'; }
+function resetAll() {
+  stopPolling(); startCountdown(0);
+  jobId = null; shownSession = false;
   $('actions').style.display = 'none';
   $('code').className = 'code waiting';
   $('code').textContent = 'Your code will appear here';
   clearStatus(); setStep(1); resetButton();
+}
+
+async function cancel() {
+  if (jobId) await fetch('/api/pair/' + jobId + '/cancel', { method: 'POST' }).catch(() => {});
+  resetAll();
   loadConfig();
 }
 
 $('go').onclick = start;
 $('cancel').onclick = cancel;
+$('recode').onclick = newCode;
 $('number').addEventListener('keydown', (e) => { if (e.key === 'Enter') start(); });
 $('copy').onclick = async () => {
   try { await navigator.clipboard.writeText($('session').value); $('copy').textContent = 'Copied ✓'; setTimeout(() => ($('copy').textContent = 'Copy session'), 1600); }

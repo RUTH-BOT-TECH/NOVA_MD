@@ -59,28 +59,38 @@ async function connect() {
   runtime.sock = sock;
 
   // ── pairing code (no QR: good for headless servers) ────────────────────
-  if (config.pairingNumber && !auth.state.creds.registered) {
-    setTimeout(async () => {
-      try {
-        const code = await sock.requestPairingCode(config.pairingNumber);
-        logger.info('────────────────────────────────────────');
-        logger.info(`PAIRING CODE for ${config.pairingNumber}:  ${code}`);
-        logger.info('WhatsApp → Linked Devices → Link with phone number');
-        logger.info('────────────────────────────────────────');
-      } catch (err) {
-        logger.error({ err }, 'could not request pairing code (falling back to QR)');
-      }
-    }, 3000);
-  }
+  // Ask only once WhatsApp has answered the handshake. A blind timer races the
+  // connection and is the usual reason a code is issued but never links.
+  let codeRequested = false;
+  const askForPairingCode = async () => {
+    if (codeRequested || !config.pairingNumber || auth.state.creds.registered) return;
+    codeRequested = true;
+    try {
+      const code = await sock.requestPairingCode(config.pairingNumber);
+      logger.info('────────────────────────────────────────');
+      logger.info(`PAIRING CODE for ${config.pairingNumber}:  ${code}`);
+      logger.info('WhatsApp → Linked Devices → Link with phone number');
+      logger.info('(the code lasts about a minute — restart the bot to get another)');
+      logger.info('────────────────────────────────────────');
+    } catch (err) {
+      codeRequested = false;
+      logger.error({ err }, 'could not request a pairing code');
+    }
+  };
 
   // ── connection lifecycle ───────────────────────────────────────────────
   sock.ev.on('connection.update', async (update) => {
     const { connection, lastDisconnect, qr } = update;
 
-    if (qr && !config.pairingNumber) {
-      logger.info('scan this QR with WhatsApp → Linked Devices');
-      qrcode.generate(qr, { small: true });
+    if (qr) {
+      if (config.pairingNumber) {
+        askForPairingCode();
+      } else {
+        logger.info('scan this QR with WhatsApp → Linked Devices');
+        qrcode.generate(qr, { small: true });
+      }
     }
+    if (connection === 'connecting') askForPairingCode();
 
     if (connection === 'open') {
       reconnecting = false;
