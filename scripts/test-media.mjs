@@ -37,6 +37,12 @@ async function resolveFfmpeg() {
 }
 const FFMPEG = await resolveFfmpeg();
 process.env.FFMPEG_PATH = FFMPEG;
+// Prove the binary actually runs before building fixtures with it, otherwise a
+// missing ffmpeg looks like a broken command instead of a missing dependency.
+const HAVE_FFMPEG = await run(FFMPEG, ['-version'], { timeout: 20_000 })
+  .then(() => true, () => false);
+let skipped = 0;
+const skip = (label, why) => { skipped++; console.log(`⤼ ${label} — ${why}`); };
 async function fixture(args, name) {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'nova-media-'));
   const out = path.join(dir, name);
@@ -49,8 +55,12 @@ async function fixture(args, name) {
 }
 
 const image = await sharp({ create: { width: 640, height: 420, channels: 3, background: '#25d366' } }).jpeg().toBuffer();
-const video = await fixture(['-f', 'lavfi', '-i', 'testsrc=size=320x240:rate=12:duration=1', '-f', 'lavfi', '-i', 'sine=frequency=330:duration=1', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-shortest'], 'v.mp4');
-const audio = await fixture(['-f', 'lavfi', '-i', 'sine=frequency=440:duration=2', '-acodec', 'libmp3lame', '-b:a', '96k'], 'a.mp3');
+const video = HAVE_FFMPEG
+  ? await fixture(['-f', 'lavfi', '-i', 'testsrc=size=320x240:rate=12:duration=1', '-f', 'lavfi', '-i', 'sine=frequency=330:duration=1', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-shortest'], 'v.mp4')
+  : null;
+const audio = HAVE_FFMPEG
+  ? await fixture(['-f', 'lavfi', '-i', 'sine=frequency=440:duration=2', '-acodec', 'libmp3lame', '-b:a', '96k'], 'a.mp3')
+  : null;
 
 function mediaMsg(kind, extra = {}) {
   const content = { imageMessage: { mimetype: 'image/jpeg' }, videoMessage: { mimetype: 'video/mp4' }, audioMessage: { mimetype: 'audio/mpeg' } }[kind];
@@ -91,15 +101,21 @@ ok('meme burns both caption bands in', Boolean(meme.image) && memeMeta.height ==
 ok('meme asks for text when given none', /Usage/.test((await call('meme', { msg: mediaMsg('imageMessage'), buffer: image })).text || ''));
 
 /* ── video + audio work ───────────────────────────────────────────── */
-const mp4 = await call('tomp4', { msg: mediaMsg('videoMessage'), buffer: video });
-ok('tomp4 returns a playable mp4', mp4.video?.length > 1000 && mp4.mimetype === 'video/mp4', brief(mp4));
-ok('tomp4 insists on a video', /needs/.test((await call('tomp4', { msg: mediaMsg('imageMessage'), buffer: image })).text || ''));
+if (HAVE_FFMPEG) {
+  const mp4 = await call('tomp4', { msg: mediaMsg('videoMessage'), buffer: video });
+  ok('tomp4 returns a playable mp4', mp4.video?.length > 1000 && mp4.mimetype === 'video/mp4', brief(mp4));
+  ok('tomp4 insists on a video', /needs/.test((await call('tomp4', { msg: mediaMsg('imageMessage'), buffer: image })).text || ''));
 
-const vn = await call('tovn', { msg: mediaMsg('audioMessage'), buffer: audio });
-ok('tovn produces a voice note (ptt)', vn.audio?.length > 500 && vn.ptt === true && /opus/.test(vn.mimetype), brief(vn));
+  const vn = await call('tovn', { msg: mediaMsg('audioMessage'), buffer: audio });
+  ok('tovn produces a voice note (ptt)', vn.audio?.length > 500 && vn.ptt === true && /opus/.test(vn.mimetype), brief(vn));
 
-const cut = await call('trim-audio', { argsText: '0 1', msg: mediaMsg('audioMessage'), buffer: audio });
-ok('trim-audio cuts and returns audio', cut.audio?.length > 500 && cut.mimetype === 'audio/mpeg', brief(cut));
+  const cut = await call('trim-audio', { argsText: '0 1', msg: mediaMsg('audioMessage'), buffer: audio });
+  ok('trim-audio cuts and returns audio', cut.audio?.length > 500 && cut.mimetype === 'audio/mpeg', brief(cut));
+} else {
+  for (const name of ['tomp4 returns a playable mp4', 'tomp4 insists on a video', 'tovn produces a voice note (ptt)', 'trim-audio cuts and returns audio']) {
+    skip(name, 'ffmpeg not installed');
+  }
+}
 
 /* ── links ────────────────────────────────────────────────────────── */
 const pasted = await call('paste', { argsText: 'nova md paste test' });
@@ -114,8 +130,9 @@ const uploaded = await call('tourl', { argsText: 'novalink 123', msg: { key: {},
 const upUrl = (uploaded.text || '').match(/https:\/\/\S+/)?.[0];
 ok('tourl of text returns a link', Boolean(upUrl), brief(uploaded));
 
-if (video?.length) {
-  const mediaUpload = await call('tourl', { msg: mediaMsg('videoMessage'), buffer: video });
+{
+  // uploads work with any media, so this runs even without ffmpeg
+  const mediaUpload = await call('tourl', { msg: mediaMsg('imageMessage'), buffer: image });
   const fileUrl = (mediaUpload.text || '').match(/https:\/\/tmpfiles\.org\/dl\/\S+/)?.[0];
   ok('tourl uploads a real file and gives a direct link', Boolean(fileUrl), brief(mediaUpload));
 }
@@ -135,5 +152,9 @@ const spotify = await call('spotifysearch', { argsText: 'https://open.spotify.co
 ok('spotify gives metadata for a real track link', /Blinding Lights/.test(spotify.caption || spotify.text || ''), brief(spotify));
 ok('spotify is honest that audio is not included', /not public/i.test(spotify.caption || '') && Boolean(spotify.image), brief(spotify));
 
-console.log(`\n${pass} passed, ${fail} failed`);
-process.exit(fail ? 1 : 0);
+console.log(`\n${pass} passed, ${fail} failed${skipped ? `, ${skipped} skipped` : ''}`);
+if (skipped) {
+  console.log('\nSkipped checks need ffmpeg. Install it (apt install ffmpeg / pip3 install imageio-ffmpeg)');
+  console.log('and run again — those commands are otherwise unverified.');
+}
+process.exit(fail || skipped ? 1 : 0);
