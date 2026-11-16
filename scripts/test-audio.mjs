@@ -29,7 +29,10 @@ ok('trim computes duration from start+end', BUILDS.trim(['0:30', '1:15']).args.j
 ok('trim without args throws a usage error', (() => { try { BUILDS.trim([]); return false; } catch { return true; } })());
 ok('trim ignores reversed range', BUILDS.trim(['60', '30']).args.join(' ') === '-ss 60 -acodec libmp3lame');
 ok('waveform renders one png frame', BUILDS.waveform().out === 'png' && BUILDS.waveform().args.includes('-frames:v'));
-ok('gif uses palettegen', BUILDS.gif().args[1].includes('palettegen'));
+// WhatsApp plays "gifs" as silent looping mp4, so this must output mp4 — not raw GIF
+ok('togif outputs mp4, not raw gif', BUILDS.gif().out === 'mp4');
+ok('togif strips audio and uses h264', BUILDS.gif().args.includes('-an') && BUILDS.gif().args.includes('libx264'));
+ok('togif sets faststart for streaming', BUILDS.gif().args.includes('+faststart'));
 
 // ── time parsing ─────────────────────────────────────────────────────────
 const times = { 65: 65, '1:05': 65, '1:02:03': 3723, '1m30s': 90, '90s': 90, '5m': 300, '2h': 7200 };

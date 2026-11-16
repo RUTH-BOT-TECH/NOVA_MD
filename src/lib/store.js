@@ -7,12 +7,15 @@ import path from 'node:path';
  */
 export class JsonStore {
   constructor(file = 'data/groups.json') {
-    this.file = path.resolve(file);
+    // ':memory:' keeps tests from writing a literal file to disk
+    this.inMemory = file === ':memory:';
+    this.file = this.inMemory ? null : path.resolve(file);
     this.data = {};
     this._timer = null;
   }
 
   async load() {
+    if (this.inMemory) return this;
     try {
       this.data = JSON.parse(await fs.readFile(this.file, 'utf8'));
     } catch {
@@ -43,11 +46,13 @@ export class JsonStore {
   }
 
   _scheduleSave() {
+    if (this.inMemory) return;
     clearTimeout(this._timer);
     this._timer = setTimeout(() => this.save().catch(() => {}), 300);
   }
 
   async save() {
+    if (this.inMemory) return;
     await fs.mkdir(path.dirname(this.file), { recursive: true });
     await fs.writeFile(this.file, JSON.stringify(this.data, null, 2));
   }
