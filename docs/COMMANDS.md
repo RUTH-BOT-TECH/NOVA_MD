@@ -1,6 +1,6 @@
 # Command catalogue
 
-Generated from the registry — **314 commands**, 584 names with aliases, 22 categories.
+Generated from the registry — **326 commands**, 610 names with aliases, 22 categories.
 
 Regenerate with `npm run docs`.
 
@@ -9,7 +9,7 @@ Regenerate with `npm run docs`.
 | [general](#general) | 21 |
 | [group](#group) | 24 |
 | [owner](#owner) | 17 |
-| [tools](#tools) | 8 |
+| [tools](#tools) | 20 |
 | [text](#text) | 23 |
 | [converter](#converter) | 29 |
 | [image](#image) | 25 |
@@ -110,14 +110,26 @@ Regenerate with `npm run docs`.
 
 | Command | Aliases | Access | What it does |
 |---|---|---|---|
+| `decrypt` | `unseal` | everyone | Open a payload made by .encrypt |
+| `distance` | `haversine` `howfar` | everyone | Great-circle distance between two coordinates |
+| `encrypt` | `seal` | everyone | Encrypt text with AES-256-GCM |
 | `getpp` | `pfp` `avatar` | everyone | Get a profile picture by reply, mention or number |
+| `moonphase` | `moon` | everyone | Tonight's moon phase and illumination |
+| `phonetic` | `nato` `spellout` | everyone | Spell text out in the NATO alphabet |
 | `qr` | `qrcode` | everyone | Turn text or a link into a QR image |
 | `sticker` | `s` `stiker` | everyone | Reply to an image to turn it into a sticker |
+| `stopwatch` | `sw` | everyone | Per-chat stopwatch: start · lap · stop |
+| `tarot` | — | everyone | Draw a three-card tarot spread |
+| `timer` | `countdown` | everyone | Countdown that pings the chat when it ends |
 | `toimg` | `toimage` `unsticker` | everyone | Turn a sticker back into a normal image |
+| `trivia` | `quiz` | everyone | One-question trivia round — answer with .trivia 1-4 |
+| `typerace` | `type` | everyone | Type the line back as fast as you can |
 | `vcard` | `contact` `savecontact` | everyone | Send a contact card — yours, or anyone's by number |
+| `vigenere` | `vig` | everyone | Vigenère cipher — .vigenere <key> <text>  ·  add -d to decode |
 | `vv` | `viewonce` `reveal` | everyone | Re-send a view-once photo/video/voice note as normal media |
 | `weather` | `forecast` `wttr` | everyone | Current weather + 3-day forecast for any city |
 | `whoami` | `myid` `id` | everyone | Your JID, chat id, role and device info |
+| `zodiac` | `starsign` `horoscope-sun` | everyone | Sun sign for a date |
 
 ## text
 

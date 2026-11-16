@@ -21,6 +21,7 @@
     "test:live": "node scripts/test-live.mjs",
     "test:economy": "node scripts/test-economy.mjs",
     "test:games": "node scripts/test-games.mjs",
+    "test:tools": "node scripts/test-tools.mjs",
     "test:text": "node scripts/test-textmaker.mjs",
     "test:audio": "node scripts/test-audio.mjs",
     "test:integration": "node scripts/test-integration.mjs"
