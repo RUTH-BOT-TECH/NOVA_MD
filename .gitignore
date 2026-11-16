@@ -10,3 +10,6 @@ web/tmp/
 *player-script.js
 *watch.html
 cookies.txt
+
+# stray in-memory store artefact
+:memory:
