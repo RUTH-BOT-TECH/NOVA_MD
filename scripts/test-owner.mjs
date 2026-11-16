@@ -64,7 +64,13 @@ async function run(name, argsText = '', { sender = OWNER, group = false, fromMe 
 }
 
 /* ── baseline ─────────────────────────────────────────────────────── */
-ok('a normal user gets an answer before any ban', /pong|ᴘɪɴɢ|online|alive/i.test(await say('.ping')), 'no reply');
+const ping = await say('.ping');
+ok('a normal user gets an answer before any ban', /ᴘɪɴɢ/.test(ping), 'no reply');
+ok('ping answers in one framed block', ping.includes('┏❐') && ping.includes('┗❐'), clean(ping));
+ok('ping reports a measured round-trip', ping.includes(sc('round-trip')) && /\d+ms/.test(ping), clean(ping));
+ok('ping reports uptime, memory and plugin count', ['uptime', 'memory', 'plugins'].every((k) => ping.includes(sc(k))), clean(ping));
+ok('ping says whether the socket is linked', /connected|not linked/.test(ping), clean(ping));
+ok('ping names the host it runs on', ping.includes(sc('host')) && ping.includes('Local'), clean(ping));
 ok('an unknown command is ignored, not answered', (await say('.notacommand')) === '');
 
 /* ── ban a user ───────────────────────────────────────────────────── */
