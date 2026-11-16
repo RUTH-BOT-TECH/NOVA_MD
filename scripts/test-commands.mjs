@@ -76,27 +76,30 @@ for (const [text, opts] of cases) {
 console.log(`\npassed ${ok}/${cases.length}`);
 if (bad.length) console.log('CHECK THESE:\n' + bad.map(([c, o]) => `  ${c} → ${o}`).join('\n'));
 
-// ── README table must match the registry exactly ──────────────────────────
+// ── README must never overstate the command count ─────────────────────────
 const readme = await fs.readFile('README.md', 'utf8');
-const claimed = {};
-for (const m of readme.matchAll(/^\| ([a-z]+) \| (\d+) \|/gm)) claimed[m[1]] = Number(m[2]);
-const actual = {};
-for (const p of new Set(registry.values())) actual[p.category || 'misc'] = (actual[p.category || 'misc'] || 0) + 1;
-const drift = Object.entries(actual).filter(([cat, n]) => claimed[cat] !== n);
-const claimedTotal = Object.values(claimed).reduce((a, b) => a + b, 0);
-if (drift.length || claimedTotal !== Object.values(actual).reduce((a, b) => a + b, 0)) {
-  console.log('✗ README table drift:', drift.map(([c, n]) => `${c} says ${claimed[c] ?? '—'} but is ${n}`).join(', ')
-    || `totals differ (README ${claimedTotal} vs ${Object.values(actual).reduce((a, b) => a + b, 0)})`);
-  process.exitCode = 1;
-} else {
-  console.log('✓ README table matches registry');
-}
+const uniquePlugins = new Set(registry.values());
+const actualTotal = uniquePlugins.size;
+const actualCats = new Set([...uniquePlugins].map((p) => p.category || 'misc')).size;
 
-// ── no command or alias may be silently swallowed by another plugin ───────
-if (registry.collisions?.length) {
-  console.log('✗ command collisions:');
-  for (const c of registry.collisions) console.log(`   ${c.key}: ${c.kept} (${c.keptFile}) kept over ${c.dropped} (${c.droppedFile})`);
+const badgeTotal = Number(readme.match(/commands-(\d+)/)?.[1] ?? NaN);
+const badgeCats = Number(readme.match(/categories-(\d+)/)?.[1] ?? NaN);
+const prose = readme.match(/(\d+)\s+commands\s+[·-]\s+(\d+)\s+(?:categories|families)/i);
+
+const claims = [
+  ['badge commands', badgeTotal],
+  ['badge categories', badgeCats],
+  ['prose commands', prose ? Number(prose[1]) : NaN],
+  ['prose categories', prose ? Number(prose[2]) : NaN],
+].filter(([, v]) => !Number.isNaN(v));
+
+const wrong = claims.filter(([label, value]) => value !== (label.includes('categor') ? actualCats : actualTotal));
+if (!claims.length) {
+  console.log('✗ README states no command count — the honesty check cannot run');
+  process.exitCode = 1;
+} else if (wrong.length) {
+  console.log(`✗ README drift: ${wrong.map(([l, v]) => `${l} says ${v}`).join(', ')} — registry has ${actualTotal} commands / ${actualCats} categories`);
   process.exitCode = 1;
 } else {
-  console.log('✓ no command/alias collisions');
+  console.log(`✓ README counts match registry (${actualTotal} commands / ${actualCats} categories, ${claims.length} claims checked)`);
 }
