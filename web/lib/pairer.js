@@ -138,9 +138,17 @@ async function requestCode(job) {
     issueCode(job);
     logger.info(`pair code issued for ${job.number.slice(0, 4)}••• (job ${job.id})`);
   } catch (err) {
-    logger.error({ err }, 'requestPairingCode failed');
+    const status = err?.output?.statusCode;
+    logger.warn(`requestPairingCode failed · ${status ?? 'unknown'} · job ${job.id}`);
     job.codeRequested = false;
-    fail(job, 'WhatsApp would not issue a code for that number. Check it, or wait a few minutes and try again.');
+    // 428 = WhatsApp closed the socket the moment a code was asked for. In
+    // practice that is either a number that is not on WhatsApp, or a rate limit.
+    const message = status === 428
+      ? 'WhatsApp closed the connection for that number. Check it is on WhatsApp, then wait a minute and try again.'
+      : status === 429
+        ? 'WhatsApp is rate-limiting code requests right now. Wait a few minutes.'
+        : 'WhatsApp would not issue a code for that number. Check it, or wait a few minutes and try again.';
+    fail(job, message);
   }
 }
 
