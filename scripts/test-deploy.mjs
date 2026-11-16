@@ -95,7 +95,9 @@ ok('web/server.js binds 0.0.0.0', /0\.0\.0\.0/.test(serverJs));
 ok('PAIR_URL is documented in .env.example', hasEnv('PAIR_URL'));
 ok('config exposes pairUrl for the menu', /pairUrl/.test(await read('src/config.js')));
 ok('the menu prints the pairing link when set', /PAIR_URL|pairUrl/.test(await read('plugins/general/menu.js')));
-ok('DEPLOY.md explains the Railway config path', /\/web\/railway\.json/.test(await read('docs/DEPLOY.md')));
+const dep = await read('docs/DEPLOY.md');
+ok('DEPLOY.md explains the Railway start command', /Custom Start Command/.test(dep) && /node web\/server\.js/.test(dep));
+ok('DEPLOY.md marks config-as-code as legacy', /legacy|deprecated/i.test(dep));
 
 /* ── Procfile ─────────────────────────────────────────────────────── */
 const procfile = await read('Procfile');
@@ -156,7 +158,9 @@ const quick = await read('PAIRING.md');
 ok('PAIRING.md exists at the repo root', quick.length > 500, String(quick.length));
 ok('README points people at PAIRING.md', readme.includes('blob/main/PAIRING.md'));
 ok('PAIRING.md maps every file in web/', ['server.js', 'index.html', 'pairer.js', 'session.js', 'railway.json'].every((f) => quick.includes(f)));
-ok('PAIRING.md has the Railway config-path step', quick.includes('/web/railway.json'));
+ok('PAIRING.md gives the dashboard start command for Railway', quick.includes('Custom Start Command') && quick.includes('node web/server.js'));
+ok('PAIRING.md warns that Config-as-Code is deprecated', /deprecated/i.test(quick) && /cannot opt in|Add File Path/i.test(quick));
+ok('PAIRING.md keeps Root Directory empty', /Root Directory\*\* empty|Leave \*\*Root Directory/i.test(quick));
 ok('PAIRING.md links the deep dive', quick.includes('docs/PAIRING.md'));
 ok('PAIRING.md has a one-time deploy section', /One-time deploy/i.test(quick) && quick.includes('id="one-time"'));
 ok('PAIRING.md explains PAIR_ONCE', /PAIR_ONCE/.test(quick) && /single-use/i.test(quick));

@@ -59,22 +59,27 @@ in one project.
 | service | config file | start command |
 |---|---|---|
 | `nova-md` | `railway.json` (repo root) | `node src/index.js` |
-| `nova-pair` | `web/railway.json` | `node web/server.js` |
+| `nova-pair` | dashboard settings (`web/railway.json` is legacy) | `node web/server.js` |
 
 Steps:
 
 1. **New Project → Deploy from GitHub repo** → pick your fork. That is the bot.
 2. In the same project: **+ New → GitHub Repo** → pick the *same* fork again.
    Rename this service to `nova-pair`.
-3. Open `nova-pair` → **Settings → Config-as-code path** and enter:
+3. Open `nova-pair` → **Settings → Deploy → Custom Start Command** and enter:
 
    ```
-   /web/railway.json
+   node web/server.js
    ```
 
-   Railway's config file does **not** follow the service's root directory, so
-   the path must be absolute from the repo root. Without this step the second
-   service tries to start the bot again.
+   Without this the service runs `npm start` and boots a second copy of the
+   bot. Also set **Healthcheck Path** to `/health`, and leave **Root Directory**
+   empty.
+
+   Config-as-Code is deprecated on Railway and unavailable to services that
+   never enabled it, so do not use **Add File Path**; `web/railway.json` remains
+   for services that already had it. The dashboard settings are the supported
+   route.
 4. `nova-pair` → **Variables**:
 
    ```

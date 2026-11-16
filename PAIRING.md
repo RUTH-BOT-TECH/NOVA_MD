@@ -81,15 +81,24 @@ This is the part you want, because users need a URL they can open.
    **bot** and uses `railway.json` from the repo root.
 2. In the same project, **+ New → GitHub Repo** → the **same** fork again.
    Rename this service to `nova-pair`.
-3. Open `nova-pair` → **Settings → Config-as-code path**, and type exactly:
+3. Open `nova-pair` → **Settings → Deploy → Custom Start Command**, and type:
 
    ```
-   /web/railway.json
+   node web/server.js
    ```
 
-   Railway's config path is absolute from the repo root and does *not* follow
-   the service's root directory. Skip this and the second service boots a
-   second copy of the bot.
+   This is the step that matters. Without it the service runs `npm start`,
+   which boots a **second copy of the bot** instead of the pair site. Leave
+   **Root Directory** empty — the site imports from `src/`, so it needs the
+   whole repo.
+
+   Then, in the same panel, set **Healthcheck Path** to `/health`.
+
+   > Railway's own Settings page says Config-as-Code is deprecated, and that
+   > services which never used it cannot opt in any more. So ignore the
+   > **Add File Path** button: `web/railway.json` stays in the repo for
+   > services that already had it, and the dashboard settings above are the
+   > supported route.
 4. `nova-pair` → **Variables**:
 
    ```
@@ -100,7 +109,9 @@ This is the part you want, because users need a URL they can open.
    ```
 
    Do **not** set `PORT` or `WEB_PORT`. Railway injects `PORT`, and
-   `web/server.js` reads `WEB_PORT || PORT`.
+   `web/server.js` reads `WEB_PORT || PORT`. For a throwaway link add
+   `PAIR_ONCE=1` (see [section 0](#one-time)).
+
 5. `nova-pair` → **Settings → Networking → Generate Domain**. That URL is the
    link you give people:
 
