@@ -113,7 +113,9 @@ ok('web/ carries its own config and logger', await fs.access('web/lib/config.js'
 /* ── the pairing service's own Railway config ─────────────────────── */
 const webRail = await json('web/railway.json');
 const webStart = (webRail.deploy?.startCommand || '').match(/^node (\S+)/)?.[1];
-ok('web/railway.json starts the pairing site', webStart === 'web/server.js', webRail.deploy?.startCommand);
+// Root Directory = web, so the config file's command resolves inside web/:
+// "node web/server.js" would look for web/web/server.js and crash on boot.
+ok('web/railway.json starts the pairing site from inside web/', webStart === 'server.js', webRail.deploy?.startCommand);
 ok('web/railway.json points its health check at /health', webRail.deploy?.healthcheckPath === '/health');
 ok('web/railway.json restarts on failure', webRail.deploy?.restartPolicyType === 'ON_FAILURE');
 ok('web/railway.json never hardcodes PORT (Railway injects it)', !JSON.stringify(webRail).includes('PORT'));
@@ -181,6 +183,16 @@ ok('compose bot mounts the named session volume at /data',
   [].concat(compose.services['nova-md']?.volumes || []).some((v) => String(v).endsWith(':/data')) &&
     'nova-data' in (compose.volumes || {}),
   JSON.stringify(compose.services['nova-md']?.volumes));
+
+/* ── the pair site's own Railway config, resolved from inside web/ ─── */
+const webRailway = JSON.parse(await read('web/railway.json'));
+ok('web/railway.json starts server.js relative to web/ (not web/server.js)',
+  webRailway.deploy?.startCommand === 'node server.js', webRailway.deploy?.startCommand);
+const siteServer = await read('web/server.js');
+ok('/health reports the working directory, so a 502 is diagnosable',
+  /root:\s*path\.basename\(process\.cwd\(\)\)/.test(siteServer));
+ok('/health reports the listening port', /port:\s*LISTEN_PORT/.test(siteServer));
+ok('startup log names root, PORT and WEB_PORT', /root=\$\{path\.basename\(process\.cwd\(\)\)\}/.test(siteServer));
 
 /* ── README buttons must point somewhere real ─────────────────────── */
 const readme = await read('README.md');

@@ -3,10 +3,12 @@
   "build": {
     "builder": "NIXPACKS",
     "buildCommand": "npm ci --omit=dev --no-audit --no-fund",
-    "watchPatterns": ["web/**", "src/**", "package.json", "package-lock.json"]
+    "watchPatterns": [
+      "**"
+    ]
   },
   "deploy": {
-    "startCommand": "node web/server.js",
+    "startCommand": "node server.js",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10,
     "healthcheckPath": "/health",

@@ -79,9 +79,18 @@ app.get('/api/jobs', (req, res) => {
   res.json(listJobs());
 });
 
+// /health is also the deploy diagnostic: `root` says which directory the
+// process started in (must be "web", not the repo root) and `port` says where
+// it is listening. Both are the two things that produce a 502 on a host when
+// they are wrong, and neither is visible from the outside otherwise.
 app.get('/health', (req, res) => res.json({
   ok: true,
   mode: process.env.PAIR_FAKE === '1' ? 'test' : 'live',
+  root: path.basename(process.cwd()),
+  port: LISTEN_PORT,
+  build: (process.env.RAILWAY_GIT_COMMIT_SHA || '').slice(0, 7) || undefined,
+  node: process.version,
+  uptime: Math.round(process.uptime()),
   ...stats(),
   ...stats2(),
 }));
@@ -93,8 +102,12 @@ app.use((req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html'))
 // what makes a deployed site answer 502 with a healthy process behind it.
 const injected = process.env.PORT && process.env.PORT !== '0';
 const port = Number(injected ? process.env.PORT : (process.env.WEB_PORT || 3000));
+const LISTEN_PORT = port;
 app.listen(port, '0.0.0.0', () => {
-  logger.info(`${config.botName} pairing site → http://0.0.0.0:${port}`);
+  logger.info(
+    `${config.botName} pairing site → http://0.0.0.0:${port} ` +
+      `(root=${path.basename(process.cwd())} PORT=${process.env.PORT ?? '-'} WEB_PORT=${process.env.WEB_PORT ?? '-'})`
+  );
   if (injected && process.env.WEB_PORT && Number(process.env.WEB_PORT) !== port) {
     logger.warn(`WEB_PORT=${process.env.WEB_PORT} ignored — the platform injected PORT=${port}, which is what traffic is routed to`);
   }
