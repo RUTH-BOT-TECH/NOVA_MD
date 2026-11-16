@@ -167,5 +167,50 @@ rail.kill('SIGTERM');
 await sleep(150);
 if (!rail.killed) rail.kill('SIGKILL');
 
+/* ── single-use mode, for a link you are about to delete ───────────── */
+const ONCE_PORT = PORT + 2;
+const onceSrv = spawn(process.execPath, ['web/server.js'], {
+  cwd: process.cwd(),
+  env: { ...process.env, PAIR_FAKE: '1', PAIR_ONCE: '1', PORT: String(ONCE_PORT), WEB_PORT: '', LOG_LEVEL: 'error' },
+  stdio: ['ignore', 'pipe', 'pipe'],
+});
+let onceUp = false;
+for (let i = 0; i < 60 && !onceUp; i++) {
+  await sleep(200);
+  onceUp = await fetch(`http://127.0.0.1:${ONCE_PORT}/health`).then((r) => r.ok).catch(() => false);
+}
+ok('single-use instance boots', onceUp);
+if (onceUp) {
+  const health = await (await fetch(`http://127.0.0.1:${ONCE_PORT}/health`)).json();
+  ok('health advertises single-use mode', health.once === true && health.used === false, JSON.stringify(health));
+
+  const post = (number) => fetch(`http://127.0.0.1:${ONCE_PORT}/api/pair`, {
+    method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ number }),
+  });
+  const first = await post('2348011111111');
+  ok('the first pairing is accepted', first.status === 200, String(first.status));
+
+  // wait for it to reach ready, which is what burns the single use
+  let state = '';
+  for (let i = 0; i < 40 && state !== 'ready'; i++) {
+    await sleep(150);
+    state = (await (await fetch(`http://127.0.0.1:${ONCE_PORT}/health`)).json()).used ? 'ready' : 'waiting';
+  }
+  ok('a completed pairing burns the single use', state === 'ready');
+
+  const second = await post('2348022222222');
+  const body = await second.json();
+  ok('a second pairing is refused with 403', second.status === 403 && /single-use/i.test(body.error), JSON.stringify(body));
+
+  const healthAfter = await (await fetch(`http://127.0.0.1:${ONCE_PORT}/health`)).json();
+  ok('health shows it has been used', healthAfter.used === true);
+
+  const page = await fetch(`http://127.0.0.1:${ONCE_PORT}/`).then((r) => r.text()).catch(() => '');
+  ok('the page still loads after the single use is spent', /SESSION_ID/.test(page));
+}
+onceSrv.kill('SIGTERM');
+await sleep(150);
+if (!onceSrv.killed) onceSrv.kill('SIGKILL');
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

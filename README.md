@@ -25,6 +25,13 @@
 
 <br><br>
 
+<strong>2b · PAIR SITE ONLY (ONE-TIME)</strong><br>
+<a href="https://render.com/deploy?repo=https://github.com/RUTH-BOT-TECH/NOVA_MD" target="_blank"><img alt="Deploy pair site" src="https://img.shields.io/badge/DEPLOY%20PAIR%20SITE-25d366?style=for-the-badge&logo=render&logoColor=white" /></a>
+<a href="https://github.com/RUTH-BOT-TECH/NOVA_MD/blob/main/PAIRING.md#railway" target="_blank"><img alt="Railway steps" src="https://img.shields.io/badge/RAILWAY%20STEPS-8B5CF6?style=for-the-badge&logo=railway&logoColor=white" /></a>
+<a href="https://github.com/RUTH-BOT-TECH/NOVA_MD/blob/main/PAIRING.md#one-time" target="_blank"><img alt="One-time guide" src="https://img.shields.io/badge/ONE--TIME%20GUIDE-0d1117?style=for-the-badge&logo=readthedocs&logoColor=white" /></a>
+
+<br><br>
+
 <strong>3 · ALL COMMANDS</strong><br>
 <a href="https://github.com/RUTH-BOT-TECH/NOVA_MD/blob/main/docs/COMMANDS.md" target="_blank"><img alt="Commands" src="https://img.shields.io/badge/COMMANDS%20%28361%29-100000?style=for-the-badge&logo=bookstack&logoColor=white&labelColor=darkorange&color=darkorange" /></a>
 

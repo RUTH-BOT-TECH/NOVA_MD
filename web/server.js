@@ -1,7 +1,7 @@
 import express from 'express';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { startPairing, getJob, cancelPairing, refreshCode, stats, listJobs, sweep, PairError } from './lib/pairer.js';
+import { startPairing, getJob, cancelPairing, refreshCode, stats, stats2, listJobs, sweep, PairError } from './lib/pairer.js';
 import { config } from '../src/config.js';
 import { logger } from '../src/lib/logger.js';
 
@@ -79,7 +79,12 @@ app.get('/api/jobs', (req, res) => {
   res.json(listJobs());
 });
 
-app.get('/health', (req, res) => res.json({ ok: true, mode: process.env.PAIR_FAKE === '1' ? 'test' : 'live', ...stats() }));
+app.get('/health', (req, res) => res.json({
+  ok: true,
+  mode: process.env.PAIR_FAKE === '1' ? 'test' : 'live',
+  ...stats(),
+  ...stats2(),
+}));
 app.use((req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 
 const port = Number(process.env.WEB_PORT || process.env.PORT || 3000);

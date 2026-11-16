@@ -158,6 +158,13 @@ ok('README points people at PAIRING.md', readme.includes('blob/main/PAIRING.md')
 ok('PAIRING.md maps every file in web/', ['server.js', 'index.html', 'pairer.js', 'session.js', 'railway.json'].every((f) => quick.includes(f)));
 ok('PAIRING.md has the Railway config-path step', quick.includes('/web/railway.json'));
 ok('PAIRING.md links the deep dive', quick.includes('docs/PAIRING.md'));
+ok('PAIRING.md has a one-time deploy section', /One-time deploy/i.test(quick) && quick.includes('id="one-time"'));
+ok('PAIRING.md explains PAIR_ONCE', /PAIR_ONCE/.test(quick) && /single-use/i.test(quick));
+ok('PAIRING.md anchors the Railway steps', quick.includes('id="railway"'));
+ok('the README one-time badges point at real anchors', readme.includes('PAIRING.md#railway') && readme.includes('PAIRING.md#one-time'));
+ok('the README offers a one-click pair-site deploy', readme.includes('render.com/deploy?repo=https://github.com/RUTH-BOT-TECH/NOVA_MD'));
+ok('PAIR_ONCE is documented in .env.example', hasEnv('PAIR_ONCE'));
+ok('PAIR_FAKE is documented in .env.example', hasEnv('PAIR_FAKE'));
 const webReadme = await read('web/README.md');
 ok('web/README.md explains the folder', /pairing/i.test(webReadme) && webReadme.includes('server.js'));
 ok('web/README.md links back to the root quickstart', webReadme.includes('../PAIRING.md'));
@@ -169,6 +176,7 @@ const guide = await read('docs/DEPLOY.md');
 for (const f of ['render.yaml', 'railway.json', 'nixpacks.toml', 'Procfile', 'app.json', 'fly.toml', 'Dockerfile', 'docker-compose.yml']) {
   ok(`DEPLOY.md documents ${f}`, guide.includes(f));
 }
+ok('DEPLOY.md lists PAIR_ONCE', /PAIR_ONCE/.test(guide));
 ok('DEPLOY.md is honest about what is untested', /not been pressed|cannot check|unverified|not.{0,20}verified/i.test(guide));
 
 console.log(`\n${pass} passed, ${fail} failed`);

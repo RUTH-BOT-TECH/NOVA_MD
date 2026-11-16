@@ -20,6 +20,38 @@ Deep dive (job states, API, env vars, limits): **[docs/PAIRING.md](docs/PAIRING.
 
 ---
 
+## 0. One-time deploy (deploy → pair → delete)  <a id="one-time"></a>
+
+If all you need is **one SESSION_ID** for yourself, deploy the site, use it,
+then throw the service away.
+
+**Render (one click).** The **DEPLOY PAIR SITE** badge in the README opens the
+blueprint. It creates two services; you only need `nova-pair`. Once the pair
+site has a URL, delete the `nova-md` service you do not need — or just ignore it.
+
+**Railway.** Follow [section 2](#railway) below, then delete the `nova-pair`
+service when you are done.
+
+Whichever host you use, add this variable to the pair-site service while it is
+temporary:
+
+```
+PAIR_ONCE=1
+```
+
+That makes the link **single-use**: the first completed pairing is accepted and
+every later attempt gets `403 This pairing link is single-use and has already
+been used.` You can confirm the state at any time:
+
+```bash
+curl https://your-pair-site/health
+# { "ok": true, "mode": "live", "once": true, "used": false, ... }
+```
+
+When you have the SESSION_ID: copy it, **delete the service**, and put the string
+in the bot's `SESSION_ID`. Nothing on the site is needed after that — the bot
+reconnects with those creds forever (until you unlink the device).
+
 ## 1. See it locally first (2 minutes)
 
 ```bash
@@ -39,7 +71,7 @@ To actually pair locally, use your real number with country code, digits only
 (`2348012345678` — no `+`, no spaces, no leading `0`), press **Get code**, then
 on the phone: **WhatsApp → Settings → Linked devices → Link with phone number**.
 
-## 2. Give users a link (Railway)
+## 2. Give users a link (Railway)  <a id="railway"></a>
 
 This is the part you want, because users need a URL they can open.
 

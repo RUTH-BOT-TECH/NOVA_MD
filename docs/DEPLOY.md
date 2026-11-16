@@ -156,6 +156,7 @@ volume for the session directory. `docker run` on a single container works too.
 | `WEB_PORT` | pairer | port the pairing site listens on |
 | `SESSION_PREFIX` | pairer | the `NOVA-MD~` part of the session string |
 | `PAIR_URL` | bot | public URL of the pairer, shown in `.menu` |
+| `PAIR_ONCE` | pairer | `1` makes the link single-use — for a throwaway deploy |
 | `GEMINI_API_KEY` / `GROQ_API_KEY` | bot | optional, one key turns on `.ai` |
 
 Nothing else is required. Every command that needs a key degrades to an honest

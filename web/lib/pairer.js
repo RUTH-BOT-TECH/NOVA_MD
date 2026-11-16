@@ -29,6 +29,9 @@ const CODE_TTL_MS = 60_000; // WhatsApp codes are short-lived; ours says so up f
 const MAX_ACTIVE = Number(process.env.MAX_ACTIVE || 3);
 const SESSION_PREFIX = process.env.SESSION_PREFIX || config.botName.replace(/[^A-Za-z0-9-]/g, '') || 'SESSION';
 const FAKE = process.env.PAIR_FAKE === '1';
+// A link you are about to delete should be good for exactly one pairing.
+const ONCE = process.env.PAIR_ONCE === '1';
+let onceUsed = false;
 
 const jobs = new Map();
 
@@ -102,6 +105,7 @@ function finish(job) {
   }
   job.state = 'ready';
   job.expiresAt = Date.now() + 10 * 60 * 1000;
+  if (ONCE) onceUsed = true;
   teardown(job);
   logger.info(`paired ${job.number.slice(0, 4)}••• (job ${job.id})`);
   announce(job).catch(() => {});
@@ -215,6 +219,9 @@ function connect(job) {
 }
 
 export async function startPairing(rawNumber) {
+  if (ONCE && onceUsed) {
+    throw new PairError('This pairing link is single-use and has already been used.', 403);
+  }
   const number = normalizeNumber(rawNumber);
 
   // single-flight: a second tap gets the same job instead of a second code
@@ -324,4 +331,6 @@ export async function sweep() {
   }
 }
 
-export const __test = { jobs, CODE_TTL_MS, ACTIVE };
+export const stats2 = () => ({ once: ONCE, used: onceUsed });
+
+export const __test = { jobs, CODE_TTL_MS, ACTIVE, resetOnce: () => { onceUsed = false; } };
