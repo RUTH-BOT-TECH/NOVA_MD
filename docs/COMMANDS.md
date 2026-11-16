@@ -1,6 +1,6 @@
 # Command catalogue
 
-Generated from the registry — **348 commands**, 654 names with aliases, 22 categories.
+Generated from the registry — **361 commands**, 671 names with aliases, 22 categories.
 
 Regenerate with `npm run docs`.
 
@@ -8,7 +8,7 @@ Regenerate with `npm run docs`.
 |---|---|
 | [general](#general) | 21 |
 | [group](#group) | 24 |
-| [owner](#owner) | 17 |
+| [owner](#owner) | 30 |
 | [tools](#tools) | 20 |
 | [text](#text) | 23 |
 | [converter](#converter) | 29 |
@@ -88,21 +88,34 @@ Regenerate with `npm run docs`.
 
 | Command | Aliases | Access | What it does |
 |---|---|---|---|
+| `apicheck` | `apis` | 👑 owner | Probe the external APIs the bot actually uses |
 | `autoread` | — | 👑 owner | Toggle blue ticks on incoming messages |
 | `autotyping` | — | 👑 owner | Show "typing…" before replies |
+| `backupnow` | `backup` | 👑 owner | Download this install’s settings as JSON |
+| `banchat` | — | 👑 owner | Lock this chat — only the owner gets through |
+| `banlist` | — | 👑 owner | Who and which chats are banned |
+| `banuser` | — | 👑 owner | Stop a number from using the bot |
 | `blacklist` | `block` | 👑 owner | Make the bot ignore a user |
 | `blocked` | `blacklisted` | 👑 owner | Show the block list |
+| `blocklist` | — | 👑 owner | WhatsApp's blocked contacts, read from the socket |
 | `botname` | `rename` | 👑 owner | Rename the bot at runtime |
 | `broadcast` | `bc` | 👑 owner | Send a message to every group the bot is in |
 | `cleartmp` | `purgetmp` | 👑 owner | Delete leftover download temp folders |
+| `dlcheck` | — | 👑 owner | What this install can actually download with |
 | `join` | `joingroup` | 👑 owner | Join a group from an invite link |
 | `leave` | `exit` | 👑 owner | Leave this group (or another) |
 | `maintenance` | `maintain` | 👑 owner | Only owners can use the bot while on |
 | `mode` | — | 👑 owner | Switch between public and self (owner-only) mode |
+| `mydata` | — | everyone | Everything this bot has stored about you |
+| `ownermenu` | `adminmenu` | 👑 owner | Owner-only commands |
 | `prefix` | — | 👑 owner | Change command prefixes at runtime |
 | `reload` | `restart` | 👑 owner | Hot-reload every plugin from disk without dropping the session |
+| `selftest` | — | 👑 owner | Check the moving parts of this install |
 | `setbotpic` | `botpic` `setpic` | 👑 owner | Set the bot profile photo from a replied image |
+| `setprefix` | — | 👑 owner | Change the command prefix and keep it |
 | `sudo` | `addowner` | 👑 owner | Grant owner rights to a user |
+| `unbanchat` | — | 👑 owner | Unlock this chat |
+| `unbanuser` | — | 👑 owner | Give a number its access back |
 | `unblacklist` | `unblock` | 👑 owner | Let a blocked user back in |
 | `unsudo` | `delowner` | 👑 owner | Revoke owner rights |
 

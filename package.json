@@ -28,7 +28,8 @@
     "test:audio": "node scripts/test-audio.mjs",
     "test:integration": "node scripts/test-integration.mjs",
     "test:pairing": "node scripts/test-pairing.mjs",
-    "test:deploy": "node scripts/test-deploy.mjs"
+    "test:deploy": "node scripts/test-deploy.mjs",
+    "test:owner": "node scripts/test-owner.mjs"
   },
   "dependencies": {
     "@hapi/boom": "^10.0.1",

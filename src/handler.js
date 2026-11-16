@@ -41,7 +41,10 @@ export async function handleIncoming({ sock, msg, registry, cfg = defaultConfig,
   const isBlacklisted = (globals.blacklist || []).includes(sender);
   const isOwner = isOwnerJid(senderJid) || dynamicOwners.includes(sender) || !!msg.key.fromMe;
 
-  if (isBlacklisted && !isOwner) return;
+  // .banuser / .banchat write here; the owner always gets through
+  const bannedUser = (globals.bannedUsers || []).includes(sender);
+  const bannedChat = (globals.bannedChats || []).includes(jid);
+  if ((isBlacklisted || bannedUser || bannedChat) && !isOwner) return;
   const text = getText(msg.message).trim();
 
   const groupMetadata = isGroup
@@ -72,7 +75,9 @@ export async function handleIncoming({ sock, msg, registry, cfg = defaultConfig,
     react: (emoji) => sock.sendMessage(jid, { react: { text: emoji, key: msg.key } }),
   };
 
-  const parsed = parseCommand(text, cfg.prefixes);
+  // a prefix saved by .setprefix wins over the .env default
+  const prefixes = globals.prefix ? [globals.prefix] : cfg.prefixes;
+  const parsed = parseCommand(text, prefixes);
 
   // Non-command traffic → give plugins a chance to react (antilink, AI chat, logs…)
   if (!parsed) {
