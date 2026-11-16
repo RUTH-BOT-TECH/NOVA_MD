@@ -145,5 +145,27 @@ try {
   if (!child.killed) child.kill('SIGKILL');
 }
 
+/* ── Railway injects PORT, not WEB_PORT ─────────────────────────────── */
+const RAIL_PORT = PORT + 1;
+const rail = spawn(process.execPath, ['web/server.js'], {
+  cwd: process.cwd(),
+  // deliberately no WEB_PORT: this is exactly what Railway provides
+  env: { ...process.env, PAIR_FAKE: '1', PORT: String(RAIL_PORT), WEB_PORT: '', LOG_LEVEL: 'error' },
+  stdio: ['ignore', 'pipe', 'pipe'],
+});
+let railUp = false;
+for (let i = 0; i < 60 && !railUp; i++) {
+  await sleep(200);
+  railUp = await fetch(`http://127.0.0.1:${RAIL_PORT}/health`).then((r) => r.ok).catch(() => false);
+}
+ok('the pairer listens on an injected PORT with no WEB_PORT (Railway)', railUp);
+if (railUp) {
+  const page = await fetch(`http://127.0.0.1:${RAIL_PORT}/`).then((r) => r.text()).catch(() => '');
+  ok('that instance serves the pairing page', /SESSION_ID/.test(page));
+}
+rail.kill('SIGTERM');
+await sleep(150);
+if (!rail.killed) rail.kill('SIGKILL');
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

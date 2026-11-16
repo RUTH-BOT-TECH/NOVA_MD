@@ -96,6 +96,7 @@ export default {
     const footer =
       `_${sc('commands')} : ${total} · ${sc('categories')} : ${groups.length}_\n` +
       `_ᴛʏᴘᴇ ${prefix}menu <ᴄᴀᴛᴇɢᴏʀʏ> ꜰᴏʀ ᴏɴᴇ ʙʟᴏᴄᴋ_\n` +
+      (config.pairUrl ? `_${sc('pair')} : ${config.pairUrl}_\n` : '') +
       `_${config.repoUrl}_`;
 
     await reply({ text: `${infoHeader({ config, runtime, sock, stats, speed })}\n\n${body}\n\n${footer}` });

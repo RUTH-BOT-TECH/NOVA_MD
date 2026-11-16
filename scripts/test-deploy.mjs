@@ -77,6 +77,26 @@ const nix = await read('nixpacks.toml');
 ok('nixpacks.toml installs ffmpeg and yt-dlp', /ffmpeg/.test(nix) && /yt-dlp/.test(nix));
 ok('nixpacks.toml starts the bot', /node src\/index\.js/.test(nix));
 
+/* ── the pairing service's own Railway config ─────────────────────── */
+const webRail = await json('web/railway.json');
+const webStart = (webRail.deploy?.startCommand || '').match(/^node (\S+)/)?.[1];
+ok('web/railway.json starts the pairing site', webStart === 'web/server.js', webRail.deploy?.startCommand);
+ok('web/railway.json points its health check at /health', webRail.deploy?.healthcheckPath === '/health');
+ok('web/railway.json restarts on failure', webRail.deploy?.restartPolicyType === 'ON_FAILURE');
+ok('web/railway.json never hardcodes PORT (Railway injects it)', !JSON.stringify(webRail).includes('PORT'));
+ok('the two Railway configs start different things',
+  railway.deploy?.startCommand !== webRail.deploy?.startCommand,
+  `${railway.deploy?.startCommand} vs ${webRail.deploy?.startCommand}`);
+const serverJs = await read('web/server.js');
+ok('web/server.js reads the injected PORT', /process\.env\.PORT/.test(serverJs));
+ok('web/server.js binds 0.0.0.0', /0\.0\.0\.0/.test(serverJs));
+
+/* ── the pairing link the bot advertises ──────────────────────────── */
+ok('PAIR_URL is documented in .env.example', hasEnv('PAIR_URL'));
+ok('config exposes pairUrl for the menu', /pairUrl/.test(await read('src/config.js')));
+ok('the menu prints the pairing link when set', /PAIR_URL|pairUrl/.test(await read('plugins/general/menu.js')));
+ok('DEPLOY.md explains the Railway config path', /\/web\/railway\.json/.test(await read('docs/DEPLOY.md')));
+
 /* ── Procfile ─────────────────────────────────────────────────────── */
 const procfile = await read('Procfile');
 const procs = procfile.trim().split('\n').map((line) => line.split(/\s*:\s*/));

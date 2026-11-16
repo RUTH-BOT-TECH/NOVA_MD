@@ -17,6 +17,8 @@ export const config = {
   ownerNumber: digits(process.env.OWNER_NUMBER), // 2348012345678
   extraOwners: list(process.env.EXTRA_OWNERS).map(digits).filter(Boolean), // "234...,234..."
   repoUrl: process.env.REPO_URL || 'https://github.com/RUTH-BOT-TECH/NOVA_MD',
+  // public URL of the pairing site once it is deployed (e.g. on Railway)
+  pairUrl: (process.env.PAIR_URL || '').replace(/\/+$/, ''),
   version: '1.2.0',
 
   // ── behaviour ─────────────────────────────────────────────────────────

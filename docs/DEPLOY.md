@@ -6,7 +6,8 @@ secrets.
 
 ```
 render.yaml        Render Blueprint — bot + pairing site, two services
-railway.json       Railway build/start + restart policy
+railway.json       Railway build/start + restart policy (the bot)
+web/railway.json   Railway config for the pairing-site service
 nixpacks.toml      Railway/Nixpacks — brings ffmpeg + yt-dlp
 Procfile           Heroku / Railway process types
 app.json           Heroku one-click (env prompts, buildpacks, worker dyno)
@@ -41,13 +42,71 @@ Free instances sleep; use `starter` if you want it always on.
 
 [![Deploy on Railway](https://img.shields.io/badge/DEPLOY_TO-RAILWAY-8B5CF6?style=for-the-badge&logo=railway&logoColor=white)](https://railway.com/new)
 
-**New Project → Deploy from GitHub repo.** Railway reads `railway.json`; it
-restarts on failure up to 10 times and checks `/health`. `nixpacks.toml` installs
-**ffmpeg and yt-dlp**, so audio/video commands work without a Dockerfile.
+**New Project → Deploy from GitHub repo.** The root `railway.json` starts the
+bot, restarts it on failure up to 10 times and checks `/health`;
+`nixpacks.toml` installs **ffmpeg and yt-dlp**, so audio/video works without a
+Dockerfile. Add `OWNER_NUMBER` and `SESSION_ID` in *Variables*. For the public
+pairing page, follow the section below — it needs a second service.
 
-Add your variables in *Variables* (`OWNER_NUMBER`, `SESSION_ID`, …). For the
-pairing site, add a second service from the same repo and set its start command
-to `node web/server.js` with `WEB_PORT` unset (Railway provides `PORT`).
+## Railway — the pairing link your users get
+
+Railway is the host to pick if you want a **public pairing page**, because it
+gives the service a real URL and you can run the bot and the site side by side
+in one project.
+
+**Two services, one repo, two config files:**
+
+| service | config file | start command |
+|---|---|---|
+| `nova-md` | `railway.json` (repo root) | `node src/index.js` |
+| `nova-pair` | `web/railway.json` | `node web/server.js` |
+
+Steps:
+
+1. **New Project → Deploy from GitHub repo** → pick your fork. That is the bot.
+2. In the same project: **+ New → GitHub Repo** → pick the *same* fork again.
+   Rename this service to `nova-pair`.
+3. Open `nova-pair` → **Settings → Config-as-code path** and enter:
+
+   ```
+   /web/railway.json
+   ```
+
+   Railway's config file does **not** follow the service's root directory, so
+   the path must be absolute from the repo root. Without this step the second
+   service tries to start the bot again.
+4. `nova-pair` → **Variables**:
+
+   ```
+   BOT_NAME=NOVA-MD
+   SESSION_PREFIX=NOVA-MD
+   REPO_URL=https://github.com/RUTH-BOT-TECH/NOVA_MD
+   MAX_ACTIVE=3
+   ```
+
+   Do **not** set `WEB_PORT` or `PORT` — Railway injects `PORT` and
+   `web/server.js` reads it (`WEB_PORT || PORT`).
+5. `nova-pair` → **Settings → Networking → Generate Domain**. That URL is your
+   pairing link:
+
+   ```
+   https://nova-pair-production.up.railway.app
+   ```
+
+   Check it before sharing: open it, and `https://…/health` should return
+   `{"ok":true,"mode":"live",…}`.
+6. Put that URL in the **bot** service's variables so `.menu` tells users where
+   to pair:
+
+   ```
+   PAIR_URL=https://nova-pair-production.up.railway.app
+   SESSION_ID=<the string the pairing site gave you>
+   OWNER_NUMBER=234…
+   ```
+
+Two things worth knowing: the pairing page stays awake only while the service
+is running, and every pairing creates a live WhatsApp socket for up to four
+minutes, so keep `MAX_ACTIVE` small on a tiny instance.
 
 ## Heroku — one click
 
@@ -96,6 +155,7 @@ volume for the session directory. `docker run` on a single container works too.
 | `PAIRING_NUMBER` | bot | optional: request a code in the logs instead of a QR |
 | `WEB_PORT` | pairer | port the pairing site listens on |
 | `SESSION_PREFIX` | pairer | the `NOVA-MD~` part of the session string |
+| `PAIR_URL` | bot | public URL of the pairer, shown in `.menu` |
 | `GEMINI_API_KEY` / `GROQ_API_KEY` | bot | optional, one key turns on `.ai` |
 
 Nothing else is required. Every command that needs a key degrades to an honest
