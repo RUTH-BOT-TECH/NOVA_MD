@@ -27,7 +27,8 @@
     "test:text": "node scripts/test-textmaker.mjs",
     "test:audio": "node scripts/test-audio.mjs",
     "test:integration": "node scripts/test-integration.mjs",
-    "test:pairing": "node scripts/test-pairing.mjs"
+    "test:pairing": "node scripts/test-pairing.mjs",
+    "test:deploy": "node scripts/test-deploy.mjs"
   },
   "dependencies": {
     "@hapi/boom": "^10.0.1",
@@ -42,5 +43,9 @@
   "optionalDependencies": {
     "@distube/ytdl-core": "^4.16.12",
     "@supabase/supabase-js": "^2.47.10"
+  },
+  "devDependencies": {
+    "smol-toml": "^1.9.1",
+    "yaml": "^2.9.1"
   }
 }

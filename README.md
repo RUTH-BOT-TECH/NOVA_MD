@@ -30,6 +30,16 @@
 
 <br><br>
 
-<sub><code>npm install && npm start</code> — or <code>.menu</code> in chat</sub>
+<br><br>
+
+<strong>4 · ONE-CLICK DEPLOY</strong><br>
+<a href="https://render.com/deploy?repo=https://github.com/RUTH-BOT-TECH/NOVA_MD" target="_blank"><img alt="Render" src="https://img.shields.io/badge/RENDER-46E3B7?style=for-the-badge&logo=render&logoColor=white" /></a>
+<a href="https://railway.com/new" target="_blank"><img alt="Railway" src="https://img.shields.io/badge/RAILWAY-8B5CF6?style=for-the-badge&logo=railway&logoColor=white" /></a>
+<a href="https://heroku.com/deploy?template=https://github.com/RUTH-BOT-TECH/NOVA_MD" target="_blank"><img alt="Heroku" src="https://img.shields.io/badge/HEROKU-430098?style=for-the-badge&logo=heroku&logoColor=white" /></a>
+<a href="https://app.koyeb.com/deploy?type=git&repository=github.com/RUTH-BOT-TECH/NOVA_MD&branch=main&name=nova-md" target="_blank"><img alt="Koyeb" src="https://img.shields.io/badge/KOYEB-121212?style=for-the-badge&logo=koyeb&logoColor=white" /></a>
+<a href="https://github.com/RUTH-BOT-TECH/NOVA_MD/blob/main/docs/DEPLOY.md" target="_blank"><img alt="Deploy guide" src="https://img.shields.io/badge/DEPLOY%20GUIDE-0d1117?style=for-the-badge&logo=readthedocs&logoColor=white" /></a>
+
+
+<sub><code>npm install && npm start</code> · <code>npm run web</code> for pairing · deploy steps in <code>docs/DEPLOY.md</code></sub>
 
 </div>

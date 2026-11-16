@@ -1,0 +1,31 @@
+# fly.io — `fly launch --copy-config --no-deploy` then `fly secrets set SESSION_ID=…`
+app = "nova-md"
+primary_region = "fra"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  NODE_ENV = "production"
+  SESSION_BACKEND = "session"
+  SESSION_DIR = "/data/sessions"
+  BOT_NAME = "NOVA-MD"
+  TZ = "Africa/Lagos"
+
+[mounts]
+  source = "nova_data"
+  destination = "/data"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+
+[[http_service.checks]]
+  interval = "30s"
+  timeout = "5s"
+  grace_period = "20s"
+  method = "GET"
+  path = "/health"

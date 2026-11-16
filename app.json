@@ -1,0 +1,38 @@
+{
+  "name": "NOVA-MD",
+  "description": "A WhatsApp bot built from scratch on Baileys — 348 commands, pairing-code login, no QR.",
+  "repository": "https://github.com/RUTH-BOT-TECH/NOVA_MD",
+  "logo": "https://raw.githubusercontent.com/RUTH-BOT-TECH/NOVA_MD/main/docs/banner.png",
+  "keywords": ["whatsapp", "baileys", "bot", "nodejs"],
+  "stack": "heroku-22",
+  "buildpacks": [
+    { "url": "https://github.com/heroku/heroku-buildpack-nodejs" },
+    { "url": "https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest" }
+  ],
+  "env": {
+    "BOT_NAME": { "description": "Shown on the menu and contact card", "value": "NOVA-MD" },
+    "OWNER_NUMBER": { "description": "Your WhatsApp number, country code, digits only", "required": true },
+    "OWNER_NAME": { "description": "Your name on the contact card", "required": true },
+    "SESSION_ID": {
+      "description": "From the pairing site (SESSION & DEPLOY badge in the README) — leave blank to log in with PAIRING_NUMBER instead",
+      "required": false
+    },
+    "PAIRING_NUMBER": {
+      "description": "Set this to the same number as OWNER_NUMBER to get a pairing code in the logs instead of a QR",
+      "required": false
+    },
+    "SESSION_BACKEND": { "description": "file | session | supabase", "value": "session" },
+    "SESSION_DIR": { "value": "/tmp/sessions" },
+    "PREFIXES": { "value": "." },
+    "MODE": { "description": "public | self", "value": "public" },
+    "TZ": { "value": "Africa/Lagos" },
+    "LOG_LEVEL": { "value": "info" },
+    "GEMINI_API_KEY": { "description": "Optional — free key from aistudio.google.com enables .ai/.gpt/.gemini", "required": false },
+    "GROQ_API_KEY": { "description": "Optional — free key from console.groq.com", "required": false }
+  },
+  "formation": {
+    "worker": { "quantity": 1, "size": "basic" }
+  },
+  "scripts": {},
+  "addons": []
+}

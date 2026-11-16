@@ -1,0 +1,29 @@
+# One command on a VPS: docker compose up -d --build
+# The bot and the pairing site share the image, different entry points.
+services:
+  nova-md:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      PORT: "8080"
+      SESSION_DIR: /data/sessions
+    volumes:
+      - nova-data:/data
+    ports:
+      - "8080:8080"
+
+  nova-pair:
+    build: .
+    restart: unless-stopped
+    command: ["node", "web/server.js"]
+    environment:
+      NODE_ENV: production
+      WEB_PORT: "3000"
+      SESSION_PREFIX: NOVA-MD
+    ports:
+      - "3000:3000"
+
+volumes:
+  nova-data:

@@ -1,0 +1,10 @@
+# Railway (and anything else using Nixpacks) — brings ffmpeg + yt-dlp along so
+# audio, video and download commands work out of the box.
+[phases.setup]
+nixPkgs = ["nodejs_20", "ffmpeg", "yt-dlp", "python3", "curl", "unzip", "ca-certificates"]
+
+[phases.install]
+cmds = ["npm ci --omit=dev --no-audit --no-fund"]
+
+[start]
+cmd = "node src/index.js"

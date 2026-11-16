@@ -1,0 +1,71 @@
+# Render Blueprint — one click creates both services.
+#
+#   1. push this repo to your own GitHub account
+#   2. Render → New → Blueprint → pick the repo
+#   3. paste SESSION_ID when asked (get it from the pairing site, below)
+#
+# The bot runs as a *web* service so it can use the free/cheap tier and stay
+# alive: it answers GET /health on $PORT. The pairer is a second service.
+services:
+  - type: web
+    name: nova-md
+    runtime: node
+    plan: starter
+    region: frankfurt
+    branch: main
+    buildCommand: npm ci --omit=dev --no-audit --no-fund
+    startCommand: node src/index.js
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000            # the bot's own /health listener
+      - key: SESSION_BACKEND
+        value: session
+      - key: SESSION_DIR
+        value: /tmp/sessions    # Render disks are paid; a session string is enough
+      - key: BOT_NAME
+        value: NOVA-MD
+      - key: OWNER_NUMBER
+        sync: false
+      - key: SESSION_ID
+        sync: false
+      - key: OWNER_NAME
+        sync: false
+      - key: TZ
+        value: Africa/Lagos
+      - key: LOG_LEVEL
+        value: info
+      # optional: any one key switches on .ai / .gpt / .gemini
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+
+  - type: web
+    name: nova-pair
+    runtime: node
+    plan: starter
+    region: frankfurt
+    branch: main
+    buildCommand: npm ci --omit=dev --no-audit --no-fund
+    startCommand: node web/server.js
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: WEB_PORT
+        value: 10000
+      - key: SESSION_PREFIX
+        value: NOVA-MD
+      - key: BOT_NAME
+        value: NOVA-MD
+      - key: REPO_URL
+        value: https://github.com/RUTH-BOT-TECH/NOVA_MD
+      - key: MAX_ACTIVE
+        value: 3
+      - key: PER_IP
+        value: 5
