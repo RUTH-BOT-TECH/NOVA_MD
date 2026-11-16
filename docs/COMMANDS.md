@@ -1,6 +1,6 @@
 # Command catalogue
 
-Generated from the registry — **299 commands**, 559 names with aliases, 22 categories.
+Generated from the registry — **314 commands**, 584 names with aliases, 22 categories.
 
 Regenerate with `npm run docs`.
 
@@ -16,7 +16,7 @@ Regenerate with `npm run docs`.
 | [media](#media) | 7 |
 | [anime](#anime) | 17 |
 | [fun](#fun) | 12 |
-| [games](#games) | 5 |
+| [games](#games) | 20 |
 | [download](#download) | 11 |
 | [ai](#ai) | 6 |
 | [misc](#misc) | 4 |
@@ -267,10 +267,25 @@ Regenerate with `npm run docs`.
 | Command | Aliases | Access | What it does |
 |---|---|---|---|
 | `8ball` | `eightball` | everyone | Ask the magic 8-ball a yes/no question |
+| `blackjack` | `bj` `21` | everyone | Play a hand of blackjack against the dealer |
+| `connect4` | `c4` | everyone | Play Connect 4 against the bot |
 | `dare` | — | everyone | Get a dare |
 | `dice` | `roll` | everyone | Roll dice — .dice 2d6 |
+| `drop` | — | everyone | Drop a disc in Connect 4 |
+| `guess` | — | everyone | Submit a Wordle guess |
+| `hit` | `hitme` | everyone | Take another card |
+| `lottery` | `lotto` | everyone | Pick 5 numbers from 1–50 |
+| `lovecalc` | `love` `match` | everyone | Deterministic love score between two names |
+| `move` | `play` | everyone | Place your mark in tic-tac-toe |
+| `quit` | `abort` | everyone | Abandon the game in this chat |
 | `quote` | `quotes` | everyone | A random quote |
+| `roll` | `roll20` `dice20` | everyone | Roll dice — .roll 2d6 or .roll 20 |
+| `roulette` | — | everyone | Bet red, black or a number |
+| `stand` | — | everyone | Hold your hand and let the dealer play |
+| `tictactoe` | `ttt` | everyone | Play tic-tac-toe against the bot |
 | `truth` | — | everyone | Get a truth question |
+| `wheel` | `spinwheel` | everyone | Spin a prize wheel |
+| `wordle` | — | everyone | Guess a five-letter word in six tries |
 
 ## download
 

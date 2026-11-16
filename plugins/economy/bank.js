@@ -1,5 +1,6 @@
 import { row, bar } from '../../src/lib/ui.js';
 import { bareJid } from '../../src/lib/message.js';
+import { account, save, fmt, targetOf as sharedTarget } from '../../src/lib/economy.js';
 
 /**
  * A small persistent economy. Everything lives in the JSON store under
@@ -10,27 +11,6 @@ import { bareJid } from '../../src/lib/message.js';
 
 const DAY = 86_400_000;
 const key = (jid) => `user:${bareJid(jid)}`;
-
-const fmt = (n, cfg) => `${cfg.economy.symbol}${Math.round(n).toLocaleString()}`;
-
-function account(store, jid, cfg) {
-  const existing = store.get(key(jid));
-  if (existing && typeof existing.wallet === 'number') return existing;
-  const fresh = { wallet: cfg.economy.startBalance, bank: 0, streak: 0, lastDaily: 0, lastWork: 0, lastBeg: 0, created: Date.now() };
-  store.set(key(jid), fresh);
-  return fresh;
-}
-
-const save = (store, jid, patch) => store.set(key(jid), patch);
-
-/** Resolve a pay/rob target: reply → mention → number. Returns bare jid. */
-function targetOf(argsText, msg) {
-  const info = msg.message?.extendedTextMessage?.contextInfo || msg.message?.imageMessage?.contextInfo;
-  const jid = info?.mentionedJid?.[0] || (info?.participant && info?.quotedMessage ? info.participant : null);
-  if (jid) return bareJid(jid);
-  const digits = String(argsText || '').match(/\d{7,15}/)?.[0];
-  return digits || null;
-}
 
 const wait = (ms) => {
   const h = Math.floor(ms / 3_600_000);
@@ -151,7 +131,7 @@ export default [
     description: 'Send money to someone (2% fee)',
     usage: '.pay @user 500  ·  reply with .pay 500',
     async run({ store, senderJid, argsText, msg, reply, config }) {
-      const target = targetOf(argsText, msg);
+      const target = sharedTarget(argsText, msg);
       const amount = Math.floor(Number(String(argsText).match(/\d+/)?.[0]));
       if (!target || !amount) return reply({ text: 'Usage: .pay @user 500  (or reply to them)' });
       if (target === bareJid(senderJid)) return reply({ text: '🙃 You cannot pay yourself.' });
@@ -175,7 +155,7 @@ export default [
     usage: '.rob @user',
     cooldownMs: 60_000,
     async run({ store, senderJid, argsText, msg, reply, config }) {
-      const target = targetOf(argsText, msg);
+      const target = sharedTarget(argsText, msg);
       if (!target) return reply({ text: 'Usage: .rob @user (or reply to them)' });
       if (target === bareJid(senderJid)) return reply({ text: '🤡 Robbing yourself?' });
 
@@ -287,7 +267,7 @@ export default [
         for (const [k] of store.entries('user:')) store.delete(k);
         return reply({ text: `🧹 Wiped ${n} account${n === 1 ? '' : 's'}.` });
       }
-      const target = targetOf(argsText, msg);
+      const target = sharedTarget(argsText, msg);
       if (!target) return reply({ text: 'Usage: .ecoreset @user | all' });
       store.delete(`user:${target}@s.whatsapp.net`);
       await reply({ text: `🧹 Reset +${target}'s account.` });

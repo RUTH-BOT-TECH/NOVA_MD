@@ -8,7 +8,7 @@
 
 **A WhatsApp bot written from scratch on Baileys.**
 
-<img alt="commands" src="https://img.shields.io/badge/commands-299-25d366?style=for-the-badge&labelColor=0d1117" />
+<img alt="commands" src="https://img.shields.io/badge/commands-314-25d366?style=for-the-badge&labelColor=0d1117" />
 <img alt="categories" src="https://img.shields.io/badge/categories-22-25d366?style=for-the-badge&labelColor=0d1117" />
 <img alt="node" src="https://img.shields.io/badge/node-%E2%89%A520-0d1117?style=for-the-badge&logo=node.js&logoColor=25d366" />
 <img alt="license" src="https://img.shields.io/badge/license-MIT-0d1117?style=for-the-badge" />
@@ -26,7 +26,7 @@
 <br><br>
 
 <strong>3 · ALL COMMANDS</strong><br>
-<a href="https://github.com/RUTH-BOT-TECH/NOVA_MD/blob/main/docs/COMMANDS.md" target="_blank"><img alt="Commands" src="https://img.shields.io/badge/COMMANDS%20%28299%29-100000?style=for-the-badge&logo=bookstack&logoColor=white&labelColor=darkorange&color=darkorange" /></a>
+<a href="https://github.com/RUTH-BOT-TECH/NOVA_MD/blob/main/docs/COMMANDS.md" target="_blank"><img alt="Commands" src="https://img.shields.io/badge/COMMANDS%20%28314%29-100000?style=for-the-badge&logo=bookstack&logoColor=white&labelColor=darkorange&color=darkorange" /></a>
 
 <br><br>
 

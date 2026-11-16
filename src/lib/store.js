@@ -29,6 +29,11 @@ export class JsonStore {
     return key === undefined ? { ...g } : (g[key] ?? fallback);
   }
 
+  /** True only when something is actually stored under this key. */
+  has(jid) {
+    return Object.prototype.hasOwnProperty.call(this.data, jid);
+  }
+
   set(jid, patch) {
     this.data[jid] = { ...(this.data[jid] || {}), ...patch };
     this._scheduleSave();
